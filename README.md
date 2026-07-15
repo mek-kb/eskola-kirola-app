@@ -1,1 +1,1 @@
-# kirolez-blai-app
+# Eskola-Kirola-App
