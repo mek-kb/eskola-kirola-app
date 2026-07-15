@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kirolez Blai 2026</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="images/icon.512.png">
+<meta name="theme-color" content="#009688">
+</head>
+<body>
+
+  <header>
+    <h1>Kirolez Blai 2026</h1>
+    <p>Langileentzako aplikazioa</p>
+  </header>
+
+  <main>
+    <button onclick="erakutsiAtala('hasiera')">🏠 Hasiera</button>
+    <button onclick="erakutsiAtala('abisuak')">📢 Abisuak</button>
+    <button onclick="erakutsiAtala('LH3')">👥 LH3</button>
+    <button onclick="erakutsiAtala('LH4')">👥 LH4</button>
+    <button onclick="erakutsiAtala('LH5')">👥 LH5</button>
+    <button onclick="erakutsiAtala('DBH')">👥 DBH</button>
+    <button onclick="erakutsiAtala('protokoloak')">📄 Protokoloak</button>
+    <button onclick="erakutsiAtala('dokumentuak')">📁 Dokumentuak</button>
+
+    <section id="edukia">
+      <h2>Ongi etorri!</h2>
+      <p>Kirolez Blai 2026 langileentzako aplikazioa.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+  }
+</script>
+<script>
+  erakutsiAtala('hasiera');
+</script>
+</body>
+</html>
