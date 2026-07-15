@@ -1,113 +1,505 @@
-body {
-  background-color: #fbf7ee;
-  color: #2c3e50;
-  font-family: Arial, sans-serif;
+/* =========================================
+   OINARRIZKO EZARPENAK
+========================================= */
+
+* {
+  box-sizing: border-box;
 }
 
+html {
+  margin: 0;
+  padding: 0;
+  background-color: #fbf7ee;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+
+  background-color: #fbf7ee;
+  color: #263238;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
 header {
-  background: #009688;
+  background-color: #009688;
   color: white;
+
   text-align: center;
-  padding: 20px;
+
+  padding:
+    calc(22px + env(safe-area-inset-top))
+    20px
+    22px;
+
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
 }
 
 header h1 {
   margin: 0;
-  font-size: 28px;
+
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 header p {
-  margin-top: 5px;
+  margin: 7px 0 0;
+
+  font-size: 15px;
+  opacity: 0.92;
 }
+
+
+/* =========================================
+   EDUKI NAGUSIA
+========================================= */
 
 main {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+  max-width: 760px;
+
+  margin: 0 auto;
+
+  padding:
+    18px
+    16px
+    calc(35px + env(safe-area-inset-bottom));
+}
+
+
+/* =========================================
+   MENU NAGUSIA
+========================================= */
+
+.menu-nagusia {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
   gap: 10px;
+
+  margin-bottom: 22px;
 }
 
-button {
+.menu-nagusia button {
+  min-height: 62px;
+
   border: none;
-  border-radius: 12px;
-  padding: 15px;
-  font-size: 16px;
-  background: white;
+  border-radius: 15px;
+
+  padding: 12px 8px;
+
+  background-color: #009688;
+  color: white;
+
+  font-size: 15px;
+  font-weight: 700;
+
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: 0.2s;
+
+  box-shadow:
+    0 3px 8px rgba(0, 150, 136, 0.20);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+
+  -webkit-tap-highlight-color: transparent;
 }
 
-button:hover {
-  background: #e8f5e9;
-  transform: translateY(-2px);
+.menu-nagusia button:active {
+  transform: scale(0.97);
+  opacity: 0.88;
 }
+
+
+/* =========================================
+   EDUKIA
+========================================= */
 
 #edukia {
-  margin-top: 20px;
+  width: 100%;
 }
 
+#edukia > h2 {
+  margin: 8px 0 18px;
+
+  font-size: 25px;
+  color: #263238;
+}
+
+#edukia > h3 {
+  margin: 28px 0 12px;
+
+  font-size: 19px;
+  color: #37474f;
+}
+
+
+/* =========================================
+   TXARTELAK
+========================================= */
+
 .txartela {
-  background: white;
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  width: 100%;
+
+  margin-bottom: 12px;
+  padding: 16px;
+
+  background-color: white;
+
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+
+  box-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.07);
 }
 
 .txartela h3 {
-  margin-top: 0;
-  color: #009688;
+  margin: 0 0 9px;
+
+  font-size: 18px;
+  color: #263238;
 }
 
 .txartela p {
-  margin: 5px 0;
+  margin: 7px 0;
+
+  line-height: 1.5;
 }
 
 .txartela small {
-  color: #666;
+  display: block;
+
+  margin-top: 10px;
+
+  color: #78909c;
+  font-size: 13px;
 }
+
+
+/* =========================================
+   ALERGIAK
+========================================= */
+
+.alergia-txartela {
+  border-left: 5px solid #e53935;
+}
+
+.alergia-txartela h3 {
+  color: #c62828;
+}
+
+
+/* =========================================
+   HASIERAKO TALDE LABURPENA
+========================================= */
+
+.talde-laburpena {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 10px;
+
+  margin-bottom: 20px;
+}
+
+.talde-kopurua {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  min-height: 74px;
+
+  padding: 14px;
+
+  border: none;
+  border-radius: 15px;
+
+  background-color: white;
+  color: #263238;
+
+  text-align: left;
+
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.07);
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+.talde-kopurua strong {
+  margin-bottom: 5px;
+
+  color: #00796b;
+  font-size: 18px;
+}
+
+.talde-kopurua span {
+  color: #607d8b;
+  font-size: 14px;
+}
+
+.talde-kopurua:active {
+  transform: scale(0.97);
+}
+
+
+/* =========================================
+   TALDEAK ETA PROGRAMAK
+========================================= */
+
+.programa-atala {
+  margin-bottom: 18px;
+
+  padding: 16px;
+
+  background-color: white;
+
+  border-radius: 17px;
+
+  box-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.07);
+}
+
+.programa-atala > h3 {
+  margin: 0 0 13px;
+
+  color: #00796b;
+  font-size: 20px;
+}
+
+.talde-botoiak {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 9px;
+}
+
+.talde-botoiak button {
+  min-height: 52px;
+
+  border: none;
+  border-radius: 13px;
+
+  padding: 10px;
+
+  background-color: #e0f2f1;
+  color: #00695c;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+.talde-botoiak button:active {
+  transform: scale(0.97);
+}
+
+
+/* =========================================
+   PARTAIDEEN BILATZAILEA
+========================================= */
 
 #bilatzailea {
   width: 100%;
-  padding: 14px;
+
   margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 12px;
+  padding: 14px 16px;
+
+  border: 2px solid #b2dfdb;
+  border-radius: 14px;
+
+  background-color: white;
+  color: #263238;
+
   font-size: 16px;
-  box-sizing: border-box;
+
+  outline: none;
 }
+
+#bilatzailea:focus {
+  border-color: #009688;
+
+  box-shadow:
+    0 0 0 3px rgba(0, 150, 136, 0.12);
+}
+
+
+/* =========================================
+   PARTAIDEAK
+========================================= */
 
 .partaide-txartela {
   border-left: 5px solid #009688;
 }
 
-.irudiHandia {
-  width: 100%;
-  border-radius: 12px;
-  margin-top: 10px;
+.partaide-txartela h3 {
+  color: #00796b;
 }
 
-a {
-  color: #009688;
+.partaide-txartela a {
+  color: #00796b;
+
+  font-weight: 700;
   text-decoration: none;
 }
 
-a:hover {
-  text-decoration: underline;
+
+/* =========================================
+   ATZERA BOTOIA
+========================================= */
+
+.atal-goiburua {
+  margin-bottom: 15px;
 }
 
-@media (max-width: 768px) {
+.atal-goiburua h2 {
+  margin: 14px 0 0;
+
+  font-size: 24px;
+}
+
+.atzera-botoia {
+  border: none;
+  border-radius: 11px;
+
+  padding: 9px 13px;
+
+  background-color: #e0f2f1;
+  color: #00695c;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   IRUDIAK
+========================================= */
+
+.irudiHandia {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  margin: 0 auto;
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.10);
+}
+
+
+/* =========================================
+   DOKUMENTU ETA EGUTEGI ESTEKAK
+========================================= */
+
+.esteka-botoia {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 48px;
+
+  color: #00796b;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+
+/* =========================================
+   BOTOI OROKORRAK
+========================================= */
+
+button {
+  font-family: inherit;
+}
+
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =========================================
+   TABLET ETA PANTAILA HANDIAK
+========================================= */
+
+@media (min-width: 600px) {
+
+  .menu-nagusia {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .talde-laburpena {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .talde-botoiak {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+
+/* =========================================
+   PANTAILA OSO TXIKIAK
+========================================= */
+
+@media (max-width: 370px) {
+
   main {
-    padding: 15px;
+    padding-left: 11px;
+    padding-right: 11px;
   }
 
-  button {
-    font-size: 15px;
-    padding: 14px;
+  .menu-nagusia {
+    gap: 8px;
   }
 
-  header h1 {
-    font-size: 24px;
+  .menu-nagusia button {
+    min-height: 58px;
+
+    font-size: 14px;
+  }
+
+  .talde-laburpena {
+    grid-template-columns: 1fr;
   }
 }
