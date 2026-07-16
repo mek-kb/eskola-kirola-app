@@ -1,46 +1,27 @@
-/* =========================================
-   KOLORE PALETA
-
-   Berdea:   #709f1d
-   Fondoa:   #F8F2CA
-   Arrosa:   #c2196c
-   Testua:   #002155
-========================================= */
-
 :root {
+  --urdina: #002155;
+  --beigea: #F8F2CA;
   --berdea: #709f1d;
-  --berde-iluna: #4f7412;
-  --fondoa: #F8F2CA;
+  --berde-iluna: #527a10;
   --arrosa: #c2196c;
-  --arrosa-iluna: #97114f;
-  --testua: #002155;
   --zuria: #ffffff;
 }
-
-
-/* =========================================
-   OINARRIA
-========================================= */
 
 * {
   box-sizing: border-box;
 }
 
 html {
-  margin: 0;
-  padding: 0;
-  background-color: var(--fondoa);
+  background-color: var(--beigea);
 }
 
 body {
   margin: 0;
-  padding: 0;
   min-height: 100vh;
+  padding: 0 0 84px;
 
-  overflow-x: hidden;
-
-  background-color: var(--fondoa);
-  color: var(--testua);
+  background-color: var(--beigea);
+  color: var(--urdina);
 
   font-family: "Boogaloo", system-ui, sans-serif;
 
@@ -54,9 +35,7 @@ a {
 }
 
 
-/* =========================================
-   SPLASH PANTAILA
-========================================= */
+/* SPLASH */
 
 #splash {
   position: fixed;
@@ -67,25 +46,17 @@ a {
   align-items: center;
   justify-content: center;
 
-  min-height: 100vh;
+  padding: 24px;
 
-  padding:
-    calc(24px + env(safe-area-inset-top))
-    24px
-    calc(24px + env(safe-area-inset-bottom));
-
-  background-color: var(--fondoa);
+  background: var(--beigea);
 
   opacity: 1;
-
-  transition:
-    opacity 0.55s ease,
-    visibility 0.55s ease;
+  transition: opacity 0.55s ease;
 }
 
 #splash.splash-ezkutatu {
   opacity: 0;
-  visibility: hidden;
+  pointer-events: none;
 }
 
 .splash-edukia {
@@ -98,143 +69,86 @@ a {
 .splash-logoa {
   display: block;
 
-  width: 145px;
-  height: 145px;
+  width: 170px;
+  height: 170px;
 
-  margin: 0 auto 20px;
+  margin: 0 auto 22px;
 
-  border-radius: 34px;
+  border: 5px solid var(--urdina);
+  border-radius: 35px;
 
   object-fit: cover;
 
-  box-shadow:
-    0 14px 30px rgba(0, 33, 85, 0.18);
-
-  animation: logo-sarrera 0.8s ease both;
+  box-shadow: 0 12px 28px rgba(0, 33, 85, 0.18);
 }
 
 .splash-marka {
   margin: 0;
 
-  color: var(--arrosa);
+  color: var(--urdina);
 
-  font-size: 28px;
-  letter-spacing: 4px;
-
-  animation: behetik-sartu 0.65s 0.15s ease both;
+  font-size: 64px;
+  line-height: 1;
 }
 
 .splash-edukia h1 {
-  margin: 8px 0 4px;
+  margin: 13px 0 0;
 
-  color: var(--testua);
+  color: var(--urdina);
 
-  font-size: clamp(37px, 10vw, 53px);
+  font-size: 43px;
   font-weight: 400;
-  line-height: 0.97;
-
-  animation: behetik-sartu 0.65s 0.25s ease both;
+  line-height: 1;
 }
 
 .splash-azpititulua {
-  margin: 13px 0 0;
+  margin: 17px 0 0;
 
-  color: var(--berde-iluna);
+  color: var(--berdea);
 
-  font-size: 21px;
-
-  animation: behetik-sartu 0.65s 0.35s ease both;
+  font-size: 25px;
 }
 
 .splash-ikasturtea {
   display: inline-block;
 
-  margin: 14px 0 0;
-  padding: 6px 17px;
+  margin: 20px 0 0;
+  padding: 8px 25px;
 
   border-radius: 999px;
 
   background-color: var(--arrosa);
-  color: white;
+  color: var(--beigea);
 
-  font-size: 20px;
-
-  animation: behetik-sartu 0.65s 0.45s ease both;
+  font-size: 24px;
 }
 
-.splash-kargatzen {
+.splash-puntuak {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 27px;
 
-  margin-top: 27px;
+  margin-top: 60px;
 }
 
-.splash-kargatzen span {
-  width: 10px;
-  height: 10px;
+.splash-puntuak span {
+  width: 16px;
+  height: 16px;
 
   border-radius: 50%;
 
+  background-color: var(--urdina);
+}
+
+.splash-puntuak span:nth-child(2) {
   background-color: var(--berdea);
-
-  animation: puntu-kargatzen 1s infinite ease-in-out;
-}
-
-.splash-kargatzen span:nth-child(2) {
-  animation-delay: 0.15s;
-}
-
-.splash-kargatzen span:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-@keyframes logo-sarrera {
-  from {
-    opacity: 0;
-    transform: scale(0.72) rotate(-5deg);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1) rotate(0);
-  }
-}
-
-@keyframes behetik-sartu {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes puntu-kargatzen {
-  0%,
-  70%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.35;
-  }
-
-  35% {
-    transform: translateY(-8px);
-    opacity: 1;
-  }
 }
 
 
-/* =========================================
-   APLIKAZIOAREN SARRERA
-========================================= */
+/* APLIKAZIOA */
 
 #aplikazioa {
   opacity: 1;
-
   transition: opacity 0.45s ease;
 }
 
@@ -243,80 +157,104 @@ a {
 }
 
 
-/* =========================================
-   HEADER
-========================================= */
+/* HEADER */
 
 header {
+  position: relative;
+
   padding:
-    calc(18px + env(safe-area-inset-top))
-    18px
-    18px;
+    calc(17px + env(safe-area-inset-top))
+    17px
+    35px;
 
-  background-color: var(--berdea);
-  color: var(--testua);
+  overflow: hidden;
 
-  box-shadow:
-    0 4px 16px rgba(0, 33, 85, 0.16);
+  background-color: var(--urdina);
+  color: var(--beigea);
 }
 
 .header-edukia {
+  position: relative;
+  z-index: 2;
+
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 15px;
 
-  width: 100%;
   max-width: 760px;
 
   margin: 0 auto;
 }
 
 .header-logoa {
-  flex: 0 0 auto;
+  width: 78px;
+  height: 78px;
 
-  width: 67px;
-  height: 67px;
-
-  border: 3px solid var(--fondoa);
-  border-radius: 18px;
+  border: 4px solid var(--beigea);
+  border-radius: 20px;
 
   object-fit: cover;
-
-  box-shadow:
-    0 5px 12px rgba(0, 33, 85, 0.2);
 }
 
 .header-marka {
-  margin: 0 0 1px;
+  margin: 0;
 
-  color: var(--fondoa);
+  color: var(--beigea);
 
-  font-size: 18px;
-  letter-spacing: 3px;
+  font-size: 43px;
+  line-height: 0.95;
 }
 
 header h1 {
-  margin: 0;
+  margin: 4px 0 0;
 
-  color: var(--testua);
+  color: var(--beigea);
 
-  font-size: clamp(27px, 7vw, 38px);
+  font-size: 25px;
   font-weight: 400;
   line-height: 1;
 }
 
 .header-azpititulua {
-  margin: 5px 0 0;
+  margin: 7px 0 0;
 
-  color: var(--fondoa);
+  color: var(--berdea);
 
-  font-size: 16px;
+  font-size: 20px;
+}
+
+.header-uhina {
+  position: absolute;
+  right: -5%;
+  bottom: -18px;
+  left: -5%;
+
+  height: 40px;
+
+  border-radius: 50% 50% 0 0;
+
+  background-color: var(--berdea);
+
+  transform: rotate(-1deg);
+}
+
+.header-uhina::after {
+  position: absolute;
+  top: 11px;
+  right: 0;
+  left: 0;
+
+  height: 35px;
+
+  border-radius: 50% 50% 0 0;
+
+  background-color: var(--beigea);
+
+  content: "";
 }
 
 
-/* =========================================
-   MAIN
-========================================= */
+/* MAIN */
 
 main {
   width: 100%;
@@ -324,16 +262,11 @@ main {
 
   margin: 0 auto;
 
-  padding:
-    17px
-    14px
-    calc(38px + env(safe-area-inset-bottom));
+  padding: 22px 14px 40px;
 }
 
 
-/* =========================================
-   MENU NAGUSIA
-========================================= */
+/* MENU NAGUSIA */
 
 .menu-nagusia {
   display: grid;
@@ -341,9 +274,9 @@ main {
   grid-template-columns:
     repeat(3, minmax(0, 1fr));
 
-  gap: 9px;
+  gap: 12px;
 
-  margin-bottom: 24px;
+  margin-bottom: 25px;
 }
 
 .menu-nagusia button {
@@ -351,120 +284,98 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 9px;
 
-  min-height: 94px;
+  min-height: 135px;
 
-  padding: 10px 6px;
+  padding: 13px 7px;
 
-  border: 0;
-  border-radius: 17px;
+  border: none;
+  border-radius: 19px;
 
-  background-color: var(--arrosa);
-  color: white;
+  background-color: var(--berdea);
+  color: var(--urdina);
 
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.05;
+  font-size: 20px;
+  line-height: 1;
 
   cursor: pointer;
 
   box-shadow:
-    0 5px 12px rgba(194, 25, 108, 0.22);
+    inset 0 0 18px rgba(255, 255, 255, 0.11),
+    0 5px 12px rgba(0, 33, 85, 0.13);
 
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    background-color 0.15s ease;
-
-  -webkit-tap-highlight-color: transparent;
-}
-
-.menu-nagusia button svg {
-  width: 29px;
-  height: 29px;
-
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.menu-nagusia button span {
-  display: block;
+  transition: transform 0.15s ease;
 }
 
 .menu-nagusia button:active {
   transform: scale(0.95);
+}
 
-  background-color: var(--arrosa-iluna);
+.menu-nagusia button svg {
+  width: 52px;
+  height: 52px;
 
-  box-shadow:
-    0 2px 5px rgba(194, 25, 108, 0.2);
+  fill: none;
+  stroke: var(--urdina);
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 
-/* =========================================
-   EDUKIA
-========================================= */
-
-#edukia {
-  width: 100%;
-}
+/* EDUKIA */
 
 #edukia > h2,
 .atal-goiburua h2 {
-  margin: 7px 0 17px;
+  margin: 8px 0 18px;
 
-  color: var(--testua);
+  color: var(--urdina);
 
-  font-size: 31px;
+  font-size: 34px;
   font-weight: 400;
-  line-height: 1.05;
 }
 
 #edukia > h3 {
-  margin: 27px 0 11px;
+  margin: 27px 0 12px;
 
   color: var(--arrosa);
 
-  font-size: 24px;
+  font-size: 27px;
   font-weight: 400;
 }
 
 
-/* =========================================
-   TXARTELAK
-========================================= */
+/* TXARTELAK */
 
 .txartela {
   width: 100%;
 
-  margin-bottom: 12px;
-  padding: 16px;
+  margin-bottom: 13px;
+  padding: 17px;
 
   border: 3px solid var(--arrosa);
-  border-radius: 18px;
+  border-radius: 20px;
 
-  background-color: white;
-  color: var(--testua);
+  background-color: var(--beigea);
+  color: var(--urdina);
 
-  box-shadow:
-    0 5px 13px rgba(0, 33, 85, 0.09);
+  box-shadow: 0 4px 10px rgba(0, 33, 85, 0.07);
 }
 
 .txartela h3 {
   margin: 0 0 8px;
 
-  color: var(--arrosa);
+  color: var(--urdina);
 
-  font-size: 23px;
+  font-size: 25px;
   font-weight: 400;
 }
 
 .txartela p {
   margin: 7px 0;
+
+  color: var(--urdina);
 
   font-family:
     -apple-system,
@@ -476,16 +387,12 @@ main {
   line-height: 1.5;
 }
 
-.txartela strong {
-  color: var(--testua);
-}
-
 .txartela small {
   display: block;
 
-  margin-top: 10px;
+  margin-top: 9px;
 
-  color: #52627e;
+  color: var(--arrosa);
 
   font-family:
     -apple-system,
@@ -494,26 +401,56 @@ main {
     sans-serif;
 
   font-size: 13px;
+  font-weight: 700;
 }
 
 
-/* =========================================
-   ALERGIAK
-========================================= */
+/* TALDEAK */
 
-.alergia-txartela {
-  border-color: var(--arrosa);
-  background-color: #fff2f8;
+.programa-atala {
+  margin-bottom: 17px;
+  padding: 16px;
+
+  border: 3px solid var(--arrosa);
+  border-radius: 19px;
+
+  background-color: var(--beigea);
 }
 
-.alergia-txartela h3 {
+.programa-atala > h3 {
+  margin: 0 0 13px;
+
   color: var(--arrosa);
+
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.talde-botoiak {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 9px;
+}
+
+.talde-botoiak button {
+  min-height: 55px;
+
+  border: 0;
+  border-radius: 14px;
+
+  background-color: var(--berdea);
+  color: var(--urdina);
+
+  font-size: 20px;
+
+  cursor: pointer;
 }
 
 
-/* =========================================
-   HASIERAKO TALDE KOPURUAK
-========================================= */
+/* HASIERAKO TALDE KOPURUAK */
 
 .talde-laburpena {
   display: grid;
@@ -539,29 +476,22 @@ main {
   border-radius: 15px;
 
   background-color: var(--berdea);
-  color: var(--testua);
+  color: var(--urdina);
 
   text-align: left;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 4px 10px rgba(112, 159, 29, 0.22);
-
-  -webkit-tap-highlight-color: transparent;
 }
 
 .talde-kopurua strong {
   margin-bottom: 4px;
 
-  color: var(--testua);
+  color: var(--urdina);
 
   font-size: 22px;
   font-weight: 400;
 }
 
 .talde-kopurua span {
-  color: var(--fondoa);
+  color: var(--urdina);
 
   font-family:
     -apple-system,
@@ -572,78 +502,8 @@ main {
   font-size: 13px;
 }
 
-.talde-kopurua:active {
-  transform: scale(0.96);
-}
 
-
-/* =========================================
-   PROGRAMAK ETA TALDEAK
-========================================= */
-
-.programa-atala {
-  margin-bottom: 17px;
-  padding: 16px;
-
-  border: 3px solid var(--arrosa);
-  border-radius: 19px;
-
-  background-color: white;
-
-  box-shadow:
-    0 5px 13px rgba(0, 33, 85, 0.09);
-}
-
-.programa-atala > h3 {
-  margin: 0 0 13px;
-
-  color: var(--arrosa);
-
-  font-size: 26px;
-  font-weight: 400;
-}
-
-.talde-botoiak {
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
-
-  gap: 9px;
-}
-
-.talde-botoiak button {
-  min-height: 53px;
-
-  padding: 9px;
-
-  border: 0;
-  border-radius: 13px;
-
-  background-color: var(--berdea);
-  color: var(--testua);
-
-  font-size: 19px;
-  font-weight: 400;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 3px 8px rgba(112, 159, 29, 0.2);
-
-  -webkit-tap-highlight-color: transparent;
-}
-
-.talde-botoiak button:active {
-  transform: scale(0.96);
-  background-color: var(--berde-iluna);
-  color: white;
-}
-
-
-/* =========================================
-   BILATZAILEA
-========================================= */
+/* PARTAIDEAK */
 
 #bilatzailea {
   width: 100%;
@@ -654,8 +514,8 @@ main {
   border: 3px solid var(--berdea);
   border-radius: 15px;
 
-  background-color: white;
-  color: var(--testua);
+  background-color: var(--beigea);
+  color: var(--urdina);
 
   font-family:
     -apple-system,
@@ -664,21 +524,7 @@ main {
     sans-serif;
 
   font-size: 16px;
-
-  outline: none;
 }
-
-#bilatzailea:focus {
-  border-color: var(--arrosa);
-
-  box-shadow:
-    0 0 0 4px rgba(194, 25, 108, 0.12);
-}
-
-
-/* =========================================
-   PARTAIDEAK
-========================================= */
 
 .partaide-txartela {
   border-left-width: 8px;
@@ -691,15 +537,6 @@ main {
   text-decoration: none;
 }
 
-
-/* =========================================
-   ATZERA BOTOIA
-========================================= */
-
-.atal-goiburua {
-  margin-bottom: 14px;
-}
-
 .atzera-botoia {
   padding: 9px 14px;
 
@@ -707,17 +544,13 @@ main {
   border-radius: 12px;
 
   background-color: var(--berdea);
-  color: var(--testua);
+  color: var(--urdina);
 
   font-size: 17px;
-
-  cursor: pointer;
 }
 
 
-/* =========================================
-   IRUDIAK
-========================================= */
+/* IRUDIAK */
 
 .irudiHandia {
   display: block;
@@ -725,57 +558,102 @@ main {
   width: 100%;
   height: auto;
 
-  margin: 0 auto;
-
   border: 4px solid var(--arrosa);
-  border-radius: 19px;
-
-  background-color: white;
-
-  box-shadow:
-    0 6px 16px rgba(0, 33, 85, 0.13);
+  border-radius: 20px;
 }
 
 
-/* =========================================
-   DOKUMENTUAK ETA EGUTEGIAK
-========================================= */
+/* ESTEKAK */
 
 .esteka-botoia {
   display: flex;
   align-items: center;
 
-  width: 100%;
   min-height: 48px;
 
-  color: var(--testua);
+  color: var(--urdina);
 
-  font-size: 21px;
+  font-size: 22px;
   text-decoration: none;
 }
 
 
-/* =========================================
-   PANTAILA TXIKIAK
-========================================= */
+/* BEHEKO MENUA */
+
+.beheko-menua {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  min-height: 72px;
+
+  padding:
+    7px
+    5px
+    calc(5px + env(safe-area-inset-bottom));
+
+  border-top: 1px solid rgba(0, 33, 85, 0.12);
+
+  background-color: var(--beigea);
+
+  box-shadow: 0 -4px 12px rgba(0, 33, 85, 0.08);
+}
+
+.beheko-menua button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  background: transparent;
+  color: var(--urdina);
+
+  font-size: 14px;
+}
+
+.beheko-menua button:nth-child(2) {
+  color: var(--arrosa);
+}
+
+.beheko-menua svg {
+  width: 27px;
+  height: 27px;
+
+  margin-bottom: 2px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* MUGIKORRA */
 
 @media (max-width: 430px) {
   .menu-nagusia {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
-
-    gap: 7px;
+    gap: 8px;
   }
 
   .menu-nagusia button {
-    min-height: 91px;
+    min-height: 118px;
 
-    font-size: 14px;
+    font-size: 17px;
   }
 
   .menu-nagusia button svg {
-    width: 27px;
-    height: 27px;
+    width: 45px;
+    height: 45px;
   }
 
   .talde-laburpena {
@@ -789,44 +667,22 @@ main {
   }
 }
 
-
-/* =========================================
-   PANTAILA OSO TXIKIAK
-========================================= */
-
 @media (max-width: 350px) {
-  main {
-    padding-left: 9px;
-    padding-right: 9px;
-  }
-
   .menu-nagusia {
     grid-template-columns:
       repeat(2, minmax(0, 1fr));
   }
 
   .header-logoa {
-    width: 58px;
-    height: 58px;
+    width: 65px;
+    height: 65px;
+  }
+
+  .header-marka {
+    font-size: 35px;
   }
 
   header h1 {
-    font-size: 25px;
-  }
-}
-
-
-/* =========================================
-   MUGIMENDUA MURRIZTU NAHI DUTENENTZAT
-========================================= */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    font-size: 22px;
   }
 }
