@@ -1,4 +1,4 @@
-const CACHE_NAME = "eskola-kirola-v6";
+const CACHE_NAME = "eskola-kirola-2-0-v1";
 
 const FILES_TO_CACHE = [
   "./",
@@ -10,41 +10,37 @@ const FILES_TO_CACHE = [
 
 self.addEventListener("install", event => {
   self.skipWaiting();
-
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
   );
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches.keys()
+      .then(names => Promise.all(
+        names.map(name => name !== CACHE_NAME ? caches.delete(name) : null)
+      ))
+      .then(() => self.clients.claim())
   );
 });
 
 self.addEventListener("fetch", event => {
-  if (event.request.method !== "GET") {
+  if (event.request.method !== "GET") return;
+
+  const url = new URL(event.request.url);
+
+  // Google Sheets eta kanpoko datuak ez cacheatu.
+  if (url.hostname.includes("docs.google.com")) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        const responseCopy = response.clone();
-
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseCopy);
-        });
-
+        const kopia = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, kopia));
         return response;
       })
       .catch(() => caches.match(event.request))
