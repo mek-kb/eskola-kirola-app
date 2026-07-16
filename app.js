@@ -109,32 +109,43 @@ function kargatzenErakutsi() {
 
 async function hasieraIkusi() {
   const edukia = document.getElementById("edukia");
-  edukia.innerHTML = `
-    <div class="kargatzen">
-      <span></span><span></span><span></span>
-    </div>
-  `;
+  kargatzenErakutsi();
 
   try {
-    const [partaideak, abisuak] = await Promise.all([
+    const emaitzak = await Promise.allSettled([
       sheetKargatu("Partaideak"),
       sheetKargatu("Abisuak")
     ]);
 
+    const partaideak =
+      emaitzak[0].status === "fulfilled"
+        ? emaitzak[0].value
+        : { table: { rows: [] } };
+
+    const abisuak =
+      emaitzak[1].status === "fulfilled"
+        ? emaitzak[1].value
+        : { table: { rows: [] } };
+
     const taldeKopuruak = {};
-    Object.values(TALDEAK).flat().forEach(taldea => {
-      taldeKopuruak[taldea] = 0;
-    });
+
+    Object.values(TALDEAK)
+      .flat()
+      .forEach(taldea => {
+        taldeKopuruak[taldea] = 0;
+      });
 
     let partaideGuztira = 0;
     const alergiakDituztenak = [];
 
-    partaideak.table.rows.forEach(row => {
-      const taldea = testuaGarbitu(gelaxka(row, 1));
-      const izena = testuaGarbitu(gelaxka(row, 2));
-      const alergiak = testuaGarbitu(gelaxka(row, 5));
+    (partaideak.table?.rows || []).forEach(row => {
+      const taldea = garbitu(gelaxka(row, 1));
+      const izena = garbitu(gelaxka(row, 2));
+      const alergiak = garbitu(gelaxka(row, 5));
 
-      if (!izena || goiburuaDa(izena, "Izena")) return;
+      if (!izena || goiburuaDa(izena, "Izena")) {
+        return;
+      }
 
       partaideGuztira++;
 
@@ -142,22 +153,27 @@ async function hasieraIkusi() {
         taldeKopuruak[taldea]++;
       }
 
-      if (
-        alergiak &&
-        !goiburuaDa(alergiak, "Alergiak") &&
-        !["ez", "ez dauka", "ez du", "bat ere ez", "ninguna", "ninguno", "no"]
-          .includes(alergiak.toLowerCase())
-      ) {
-        alergiakDituztenak.push({ taldea, izena, alergiak });
+      if (alergiaErrealaDa(alergiak)) {
+        alergiakDituztenak.push({
+          taldea,
+          izena,
+          alergiak
+        });
       }
     });
 
-    const abisuZerrenda = abisuak.table.rows.filter(row => {
-      const izenburua = testuaGarbitu(gelaxka(row, 1));
-      return izenburua && !goiburuaDa(izenburua, "Izenburua");
+    const abisuZerrenda = (abisuak.table?.rows || []).filter(row => {
+      const izenburua = garbitu(gelaxka(row, 1));
+
+      return (
+        izenburua &&
+        !goiburuaDa(izenburua, "Izenburua")
+      );
     });
 
-    const azkenAbisuak = abisuZerrenda.slice(-3).reverse();
+    const azkenAbisuak = abisuZerrenda
+      .slice(-3)
+      .reverse();
 
     const gaur = new Date().toLocaleDateString("eu-ES", {
       weekday: "long",
@@ -167,92 +183,62 @@ async function hasieraIkusi() {
     });
 
     let html = `
-      <section class="dashboard-goiburua">
+      <section class="ongietorri-txartela">
         <div>
-          <p class="dashboard-kaixo">Kaixo! 👋</p>
-          <h2>Gaurko laburpena</h2>
-          <p class="dashboard-data">${htmlBabestu(gaur)}</p>
+          <p class="ongietorri-testua">Kaixo!</p>
+          <h2>Mutrikuko Eskola Kirola</h2>
+          <p class="gaurko-data">${babestu(gaur)}</p>
         </div>
-        <img src="images/icon.192.png" alt="MEKE logoa">
+
+        <img
+          src="images/icon.192.png"
+          alt="MEKE logoa"
+        >
       </section>
 
       <section class="estatistika-sarea">
-        <article class="estatistika-txartela estatistika-partaideak">
-          <strong>${partaideGuztira}</strong>
-          <span>Partaide</span>
-        </article>
+        ${estatistikaTxartela(
+          "partaideak",
+          partaideGuztira,
+          "Partaide"
+        )}
 
-        <article class="estatistika-txartela estatistika-abisuak klikagarria"
-          onclick="erakutsiAtala('abisuak')">
-          <strong>${abisuZerrenda.length}</strong>
-          <span>Abisu</span>
-        </article>
+        ${estatistikaTxartela(
+          "abisuak",
+          abisuZerrenda.length,
+          "Abisu",
+          "erakutsiAtala('abisuak')"
+        )}
 
-        <article class="estatistika-txartela estatistika-alerta">
-          <strong>${alergiakDituztenak.length}</strong>
-          <span>Alergia</span>
-        </article>
+        ${estatistikaTxartela(
+          "alerta",
+          alergiakDituztenak.length,
+          "Alergia"
+        )}
 
-        <article class="estatistika-txartela estatistika-egutegia klikagarria"
-          onclick="erakutsiAtala('egutegiak')">
-          <strong>2</strong>
-          <span>Egutegi</span>
-        </article>
-      </section>
-
-      <section class="gaurko-jarduerak">
-        <div>
-          <h3>Gaurko jarduerak</h3>
-          <p>Google Calendar lotzean, gaurko hitzorduak hemen agertuko dira.</p>
-        </div>
-        <button onclick="erakutsiAtala('egutegiak')">Ikusi</button>
+        ${estatistikaTxartela(
+          "egutegia",
+          2,
+          "Egutegi",
+          "erakutsiAtala('egutegiak')"
+        )}
       </section>
 
       <div class="atal-izenburua">
-        <h2>Azken abisuak</h2>
-        <button onclick="erakutsiAtala('abisuak')">Ikusi guztiak</button>
+        <h2>Programak eta taldeak</h2>
+
+        <button onclick="erakutsiAtala('taldeak')">
+          Ikusi guztiak
+        </button>
       </div>
-    `;
-
-    if (azkenAbisuak.length === 0) {
-      html += `<div class="txartela"><p>Ez dago abisurik.</p></div>`;
-    }
-
-    azkenAbisuak.forEach(row => {
-      const data = testuaGarbitu(gelaxka(row, 0));
-      const izenburua = testuaGarbitu(gelaxka(row, 1));
-      const mezua = testuaGarbitu(gelaxka(row, 2));
-      const taldea = testuaGarbitu(gelaxka(row, 3));
-
-      html += `
-        <article class="txartela abisu-txartela">
-          <h3>${htmlBabestu(izenburua)}</h3>
-          <p>${htmlBabestu(mezua)}</p>
-          <small>${htmlBabestu(data)}${taldea ? ` · ${htmlBabestu(taldea)}` : ""}</small>
-        </article>
-      `;
-    });
-
-    html += `
-      <div class="atal-izenburua">
-        <h2>Programak</h2>
-        <button onclick="erakutsiAtala('taldeak')">Ikusi guztiak</button>
-      </div>
-
-      <section class="programa-zerrenda">
     `;
 
     Object.entries(TALDEAK).forEach(([programa, taldeak]) => {
-      const guztira = taldeak.reduce((batura, taldea) => batura + taldeKopuruak[taldea], 0);
-
       html += `
-        <article class="programa-lerroa">
-          <div class="programa-izenburua">
-            <span>${htmlBabestu(programa)}</span>
-            <strong>${guztira}</strong>
-          </div>
+        <section class="dashboard-programa">
+          <h3>${babestu(programa)}</h3>
 
-          <div class="programa-taldeak-trinkoa">
+          <div class="dashboard-taldeak">
             ${taldeak.map(taldea => `
               <button onclick="partaideakIkusi('${taldea}')">
                 <span>${taldea}</span>
@@ -260,11 +246,36 @@ async function hasieraIkusi() {
               </button>
             `).join("")}
           </div>
-        </article>
+        </section>
       `;
     });
 
-    html += `</section>`;
+    html += `
+      <div class="atal-izenburua">
+        <h2>Azken abisuak</h2>
+
+        <button onclick="erakutsiAtala('abisuak')">
+          Ikusi guztiak
+        </button>
+      </div>
+    `;
+
+    if (azkenAbisuak.length === 0) {
+      html += `
+        <article class="txartela">
+          <p>Ez dago abisurik.</p>
+        </article>
+      `;
+    }
+
+    azkenAbisuak.forEach(row => {
+      html += abisuTxartela(
+        garbitu(gelaxka(row, 0)),
+        garbitu(gelaxka(row, 1)),
+        garbitu(gelaxka(row, 2)),
+        garbitu(gelaxka(row, 3))
+      );
+    });
 
     html += `
       <div class="atal-izenburua">
@@ -273,31 +284,61 @@ async function hasieraIkusi() {
     `;
 
     if (alergiakDituztenak.length === 0) {
-      html += `<div class="txartela"><p>Ez dago alergiarik erregistratuta.</p></div>`;
-    }
-
-    alergiakDituztenak.slice(0, 5).forEach(partaidea => {
       html += `
-        <article class="txartela alergia-txartela">
-          <h3>${htmlBabestu(partaidea.izena)}</h3>
-          <p><strong>${htmlBabestu(partaidea.taldea)}</strong> · ${htmlBabestu(partaidea.alergiak)}</p>
+        <article class="txartela">
+          <p>Ez dago alergiarik erregistratuta.</p>
         </article>
       `;
-    });
+    }
+
+    alergiakDituztenak
+      .slice(0, 5)
+      .forEach(partaidea => {
+        html += `
+          <article class="txartela alergia-txartela">
+            <h3>${babestu(partaidea.izena)}</h3>
+
+            <p>
+              <strong>${babestu(partaidea.taldea)}</strong>
+              · ${babestu(partaidea.alergiak)}
+            </p>
+          </article>
+        `;
+      });
+
+    const erroreak = emaitzak
+      .filter(emaitza => emaitza.status === "rejected")
+      .map(emaitza => emaitza.reason?.message)
+      .filter(Boolean);
+
+    if (erroreak.length > 0) {
+      html += `
+        <article class="txartela">
+          <p>
+            Datu-fitxaren bat ezin izan da kargatu,
+            baina aplikazioa ireki da.
+          </p>
+
+          <small>${babestu(erroreak.join(" · "))}</small>
+        </article>
+      `;
+    }
 
     edukia.innerHTML = html;
 
   } catch (error) {
     edukia.innerHTML = `
-      <div class="orrialde-goiburua"><h2>Hasiera</h2></div>
-      <div class="txartela">
-        <p>Ezin izan da dashboarda kargatu.</p>
-        <small>${htmlBabestu(error.message)}</small>
+      <div class="orrialde-goiburua">
+        <h2>Hasiera</h2>
       </div>
+
+      <article class="txartela">
+        <p>Ezin izan da hasiera kargatu.</p>
+        <small>${babestu(error?.message || "Errore ezezaguna")}</small>
+      </article>
     `;
   }
 }
-
 
 function estatistikaTxartela(mota, zenbakia, etiketa, onclick = "") {
   const ikonoak = {
