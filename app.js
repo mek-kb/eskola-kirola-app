@@ -1,116 +1,89 @@
-const SHEET_ID =
-  "1ResFVm5rBVHrt25QYdZTIWFy8hGwD-EkKz2BKa5ww-0";
+const SHEET_ID = "1ResFVm5rBVHrt25QYdZTIWFy8hGwD-EkKz2BKa5ww-0";
 
 const TALDEAK = {
-  "Psikomotrizitatea": ["HH3", "HH4", "HH5"],
+  Psikomotrizitatea: ["HH3", "HH4", "HH5"],
   "Jolas Hezi": ["LH1", "LH2"],
-  "Multikirola": ["LH3", "LH4", "LH5", "LH6"]
+  Multikirola: ["LH3", "LH4", "LH5", "LH6"]
 };
 
-/*
-  Google Calendarreko estekak gero sartuko ditugu.
-  Momentuz hutsik uzten ditugu.
-*/
+// Hemen gehituko ditugu Google Calendar estekak.
 const IKASTURTEKO_EGUTEGIA_URL = "";
 const BEGIRALEEN_EGUTEGIA_URL = "";
 
-
-/* =========================================
-   MENU NAGUSIA
-========================================= */
-
 function erakutsiAtala(atala) {
-  if (atala === "hasiera") {
-    hasieraIkusi();
-    return;
-  }
+  navAktiboaEzarri(atala);
 
-  if (atala === "abisuak") {
-    abisuakIkusi();
-    return;
-  }
+  const ekintzak = {
+    hasiera: hasieraIkusi,
+    taldeak: taldeakIkusi,
+    egutegiak: egutegiakIkusi,
+    agiriak: agiriakIkusi,
+    gehiago: gehiagoIkusi,
+    abisuak: abisuakIkusi,
+    ordutegia: ordutegiaIkusi,
+    kokalekuak: kokalekuakIkusi,
+    ikasturtekoEgutegia: ikasturtekoEgutegiaIkusi,
+    begiraleenEgutegia: begiraleenEgutegiaIkusi,
+    dokumentuak: dokumentuakIkusi,
+    protokoloak: protokoloakIkusi
+  };
 
-  if (atala === "ordutegia") {
-    ordutegiaIkusi();
-    return;
-  }
-
-  if (atala === "kokalekuak") {
-    kokalekuakIkusi();
-    return;
-  }
-
-  if (atala === "ikasturtekoEgutegia") {
-    ikasturtekoEgutegiaIkusi();
-    return;
-  }
-
-  if (atala === "begiraleenEgutegia") {
-    begiraleenEgutegiaIkusi();
-    return;
-  }
-
-  if (atala === "taldeak") {
-    taldeakIkusi();
-    return;
-  }
-
-  if (atala === "dokumentuak") {
-    dokumentuakIkusi();
-    return;
-  }
-
-  if (atala === "protokoloak") {
-    protokoloakIkusi();
-  }
+  if (ekintzak[atala]) ekintzak[atala]();
 }
 
+function navAktiboaEzarri(atala) {
+  document.querySelectorAll(".beheko-menua button")
+    .forEach(b => b.classList.remove("nav-aktiboa"));
 
-/* =========================================
-   GOOGLE SHEET IRAKURRI
-========================================= */
+  const mapa = {
+    hasiera: "nav-hasiera",
+    abisuak: "nav-hasiera",
+    taldeak: "nav-taldeak",
+    egutegiak: "nav-egutegiak",
+    ikasturtekoEgutegia: "nav-egutegiak",
+    begiraleenEgutegia: "nav-egutegiak",
+    agiriak: "nav-agiriak",
+    dokumentuak: "nav-agiriak",
+    protokoloak: "nav-agiriak",
+    gehiago: "nav-gehiago",
+    ordutegia: "nav-gehiago",
+    kokalekuak: "nav-gehiago"
+  };
+
+  const botoia = document.getElementById(mapa[atala] || "");
+  if (botoia) botoia.classList.add("nav-aktiboa");
+}
 
 async function sheetKargatu(sheetIzena) {
   const url =
     `https://docs.google.com/spreadsheets/d/${SHEET_ID}` +
-    `/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetIzena)}`;
+    `/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetIzena)}` +
+    `&t=${Date.now()}`;
 
-  const erantzuna = await fetch(url, {
-    cache: "no-store"
-  });
-
-  if (!erantzuna.ok) {
-    throw new Error(`Ezin izan da ${sheetIzena} fitxa irakurri.`);
-  }
+  const erantzuna = await fetch(url, { cache: "no-store" });
+  if (!erantzuna.ok) throw new Error(`${sheetIzena} fitxa ezin izan da irakurri.`);
 
   const testua = await erantzuna.text();
-
   const hasiera = testua.indexOf("{");
   const amaiera = testua.lastIndexOf("}") + 1;
 
-  if (hasiera === -1 || amaiera === 0) {
+  if (hasiera < 0 || amaiera <= 0) {
     throw new Error("Google Sheet-eko erantzuna ez da zuzena.");
   }
 
   return JSON.parse(testua.substring(hasiera, amaiera));
 }
 
-
 function gelaxka(row, index) {
-  if (!row?.c?.[index]) {
-    return "";
-  }
-
+  if (!row?.c?.[index]) return "";
   return row.c[index].f ?? row.c[index].v ?? "";
 }
 
-
-function testuaGarbitu(testua) {
+function garbitu(testua) {
   return String(testua ?? "").trim();
 }
 
-
-function htmlBabestu(testua) {
+function babestu(testua) {
   return String(testua ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -119,27 +92,58 @@ function htmlBabestu(testua) {
     .replaceAll("'", "&#039;");
 }
 
-
 function goiburuaDa(testua, goiburua) {
-  return testuaGarbitu(testua).toLowerCase() ===
-    goiburua.toLowerCase();
+  return garbitu(testua).toLowerCase() === goiburua.toLowerCase();
 }
 
+function alergiaErrealaDa(alergiak) {
+  const balioa = garbitu(alergiak).toLowerCase();
+  return !["", "ez", "ez dauka", "ez du", "bat ere ez", "ninguna", "ninguno", "no", "alergiak"]
+    .includes(balioa);
+}
 
-/* =========================================
-   HASIERA
-========================================= */
+function kargatzenErakutsi() {
+  document.getElementById("edukia").innerHTML =
+    `<div class="kargatzen"><span></span><span></span><span></span></div>`;
+}
 
 async function hasieraIkusi() {
   const edukia = document.getElementById("edukia");
-
-  edukia.innerHTML = "<p>Hasiera kargatzen...</p>";
+  kargatzenErakutsi();
 
   try {
-    const [abisuak, partaideak] = await Promise.all([
-      sheetKargatu("Abisuak"),
-      sheetKargatu("Partaideak")
+    const [partaideak, abisuak] = await Promise.all([
+      sheetKargatu("Partaideak"),
+      sheetKargatu("Abisuak")
     ]);
+
+    const taldeKopuruak = {};
+    Object.values(TALDEAK).flat().forEach(t => taldeKopuruak[t] = 0);
+
+    let partaideGuztira = 0;
+    const alergiakDituztenak = [];
+
+    partaideak.table.rows.forEach(row => {
+      const taldea = garbitu(gelaxka(row, 1));
+      const izena = garbitu(gelaxka(row, 2));
+      const alergiak = garbitu(gelaxka(row, 5));
+
+      if (!izena || goiburuaDa(izena, "Izena")) return;
+
+      partaideGuztira++;
+      if (taldeKopuruak[taldea] !== undefined) taldeKopuruak[taldea]++;
+
+      if (alergiaErrealaDa(alergiak)) {
+        alergiakDituztenak.push({ taldea, izena, alergiak });
+      }
+    });
+
+    const abisuZerrenda = abisuak.table.rows.filter(row => {
+      const izenburua = garbitu(gelaxka(row, 1));
+      return izenburua && !goiburuaDa(izenburua, "Izenburua");
+    });
+
+    const azkenAbisuak = abisuZerrenda.slice(-3).reverse();
 
     const gaur = new Date().toLocaleDateString("eu-ES", {
       weekday: "long",
@@ -148,426 +152,134 @@ async function hasieraIkusi() {
       day: "numeric"
     });
 
-    const taldeKopuruak = {};
-
-    Object.values(TALDEAK)
-      .flat()
-      .forEach(taldea => {
-        taldeKopuruak[taldea] = 0;
-      });
-
-    const alergiakDituztenak = [];
-
-    partaideak.table.rows.forEach(row => {
-      const taldea = testuaGarbitu(gelaxka(row, 1));
-      const izena = testuaGarbitu(gelaxka(row, 2));
-      const alergiak = testuaGarbitu(gelaxka(row, 5));
-
-      if (!izena || goiburuaDa(izena, "Izena")) {
-        return;
-      }
-
-      if (taldeKopuruak[taldea] !== undefined) {
-        taldeKopuruak[taldea]++;
-      }
-
-      if (
-        alergiak &&
-        !goiburuaDa(alergiak, "Alergiak") &&
-        alergiak.toLowerCase() !== "ez" &&
-        alergiak.toLowerCase() !== "ez dauka" &&
-        alergiak.toLowerCase() !== "bat ere ez"
-      ) {
-        alergiakDituztenak.push({
-          taldea,
-          izena,
-          alergiak
-        });
-      }
-    });
-
-    const abisuZerrenda = abisuak.table.rows
-      .filter(row => {
-        const izenburua = testuaGarbitu(gelaxka(row, 1));
-
-        return izenburua &&
-          !goiburuaDa(izenburua, "Izenburua");
-      })
-      .slice(-3)
-      .reverse();
-
     let html = `
-      <h2>🏠 Hasiera</h2>
+      <section class="ongietorri-txartela">
+        <div>
+          <p class="ongietorri-testua">Kaixo!</p>
+          <h2>Mutrikuko Eskola Kirola</h2>
+          <p class="gaurko-data">${babestu(gaur)}</p>
+        </div>
+        <img src="images/icon.192.png" alt="MEKE logoa">
+      </section>
 
-      <div class="txartela">
-        <h3>📅 Gaur</h3>
-        <p>${htmlBabestu(gaur)}</p>
+      <section class="estatistika-sarea">
+        ${estatistikaTxartela("partaideak", partaideGuztira, "Partaide")}
+        ${estatistikaTxartela("abisuak", abisuZerrenda.length, "Abisu", "erakutsiAtala('abisuak')")}
+        ${estatistikaTxartela("alerta", alergiakDituztenak.length, "Alergia")}
+        ${estatistikaTxartela("egutegia", 2, "Egutegi", "erakutsiAtala('egutegiak')")}
+      </section>
+
+      <div class="atal-izenburua">
+        <h2>Programak eta taldeak</h2>
+        <button onclick="erakutsiAtala('taldeak')">Ikusi guztiak</button>
       </div>
-
-      <h3>👥 Partaide kopurua</h3>
-
-      <div class="talde-laburpena">
     `;
 
-    Object.entries(taldeKopuruak).forEach(([taldea, kopurua]) => {
+    Object.entries(TALDEAK).forEach(([programa, taldeak]) => {
       html += `
-        <button
-          class="talde-kopurua"
-          onclick="partaideakIkusi('${taldea}')"
-        >
-          <strong>${taldea}</strong>
-          <span>${kopurua} partaide</span>
-        </button>
-      `;
-    });
-
-    html += `</div>`;
-
-    html += `<h3>📢 Azken abisuak</h3>`;
-
-    if (abisuZerrenda.length === 0) {
-      html += `
-        <div class="txartela">
-          <p>Ez dago abisurik.</p>
-        </div>
-      `;
-    }
-
-    abisuZerrenda.forEach(row => {
-      const data = gelaxka(row, 0);
-      const izenburua = gelaxka(row, 1);
-      const mezua = gelaxka(row, 2);
-      const taldea = gelaxka(row, 3);
-
-      html += `
-        <div class="txartela">
-          <h3>${htmlBabestu(izenburua)}</h3>
-          <p>${htmlBabestu(mezua)}</p>
-
-          <small>
-            ${htmlBabestu(data)}
-            ${taldea ? ` · ${htmlBabestu(taldea)}` : ""}
-          </small>
-        </div>
-      `;
-    });
-
-    html += `<h3>⚠️ Alergiak</h3>`;
-
-    if (alergiakDituztenak.length === 0) {
-      html += `
-        <div class="txartela">
-          <p>Ez dago alergiarik erregistratuta.</p>
-        </div>
-      `;
-    }
-
-    alergiakDituztenak.forEach(partaidea => {
-      html += `
-        <div class="txartela alergia-txartela">
-          <h3>${htmlBabestu(partaidea.izena)}</h3>
-
-          <p>
-            <strong>Taldea:</strong>
-            ${htmlBabestu(partaidea.taldea)}
-          </p>
-
-          <p>
-            <strong>Alergiak:</strong>
-            ${htmlBabestu(partaidea.alergiak)}
-          </p>
-        </div>
-      `;
-    });
-
-    edukia.innerHTML = html;
-
-  } catch (error) {
-    edukia.innerHTML = `
-      <h2>🏠 Hasiera</h2>
-      <p>Ezin izan da hasierako informazioa kargatu.</p>
-      <small>${htmlBabestu(error.message)}</small>
-    `;
-  }
-}
-
-
-/* =========================================
-   ABISUAK
-========================================= */
-
-async function abisuakIkusi() {
-  const edukia = document.getElementById("edukia");
-
-  edukia.innerHTML = "<p>Abisuak kargatzen...</p>";
-
-  try {
-    const json = await sheetKargatu("Abisuak");
-
-    let html = `<h2>📢 Abisuak</h2>`;
-    let kopurua = 0;
-
-    json.table.rows
-      .slice()
-      .reverse()
-      .forEach(row => {
-        const data = testuaGarbitu(gelaxka(row, 0));
-        const izenburua = testuaGarbitu(gelaxka(row, 1));
-        const mezua = testuaGarbitu(gelaxka(row, 2));
-        const taldea = testuaGarbitu(gelaxka(row, 3));
-
-        if (
-          !izenburua ||
-          goiburuaDa(izenburua, "Izenburua")
-        ) {
-          return;
-        }
-
-        kopurua++;
-
-        html += `
-          <div class="txartela">
-            <h3>${htmlBabestu(izenburua)}</h3>
-            <p>${htmlBabestu(mezua)}</p>
-
-            <small>
-              ${htmlBabestu(data)}
-              ${taldea ? ` · ${htmlBabestu(taldea)}` : ""}
-            </small>
+        <section class="dashboard-programa">
+          <h3>${babestu(programa)}</h3>
+          <div class="dashboard-taldeak">
+            ${taldeak.map(t => `
+              <button onclick="partaideakIkusi('${t}')">
+                <span>${t}</span>
+                <strong>${taldeKopuruak[t]}</strong>
+              </button>
+            `).join("")}
           </div>
-        `;
-      });
-
-    if (kopurua === 0) {
-      html += `
-        <div class="txartela">
-          <p>Ez dago abisurik.</p>
-        </div>
+        </section>
       `;
+    });
+
+    html += `
+      <div class="atal-izenburua">
+        <h2>Azken abisuak</h2>
+        <button onclick="erakutsiAtala('abisuak')">Ikusi guztiak</button>
+      </div>
+    `;
+
+    if (!azkenAbisuak.length) {
+      html += `<article class="txartela"><p>Ez dago abisurik.</p></article>`;
     }
 
+    azkenAbisuak.forEach(row => {
+      html += abisuTxartela(
+        garbitu(gelaxka(row, 0)),
+        garbitu(gelaxka(row, 1)),
+        garbitu(gelaxka(row, 2)),
+        garbitu(gelaxka(row, 3))
+      );
+    });
+
+    html += `<div class="atal-izenburua"><h2>Alergien alertak</h2></div>`;
+
+    if (!alergiakDituztenak.length) {
+      html += `<article class="txartela"><p>Ez dago alergiarik erregistratuta.</p></article>`;
+    }
+
+    alergiakDituztenak.slice(0, 5).forEach(p => {
+      html += `
+        <article class="txartela alergia-txartela">
+          <h3>${babestu(p.izena)}</h3>
+          <p><strong>${babestu(p.taldea)}</strong> · ${babestu(p.alergiak)}</p>
+        </article>
+      `;
+    });
+
     edukia.innerHTML = html;
-
   } catch (error) {
-    edukia.innerHTML = `
-      <h2>📢 Abisuak</h2>
-      <p>Ezin izan dira abisuak kargatu.</p>
-      <small>${htmlBabestu(error.message)}</small>
-    `;
+    edukia.innerHTML = erroreTxartela("Hasiera", error);
   }
 }
 
+function estatistikaTxartela(mota, zenbakia, etiketa, onclick = "") {
+  const ikonoak = {
+    partaideak: `<path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7-1a3 3 0 1 0 0-6m-7 9c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5Zm7 1c3 0 6 1.5 6 4v2h-5"/>`,
+    abisuak: `<path d="M15 17H9m9-2V11a6 6 0 0 0-12 0v4l-2 2h16l-2-2Zm-7 5h2"/>`,
+    alerta: `<path d="M12 3 2.5 20h19L12 3Zm0 6v5m0 3h.01"/>`,
+    egutegia: `<path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>`
+  };
 
-/* =========================================
-   ORDUTEGI OROKORRA
-========================================= */
-
-async function ordutegiaIkusi() {
-  const edukia = document.getElementById("edukia");
-
-  edukia.innerHTML = "<p>Ordutegia kargatzen...</p>";
-
-  try {
-    const json = await sheetKargatu("Ordutegia");
-
-    let izenburua = "";
-    let irudia = "";
-
-    json.table.rows.forEach(row => {
-      const izenburuaSheet = testuaGarbitu(gelaxka(row, 0));
-      const irudiaSheet = testuaGarbitu(gelaxka(row, 1));
-
-      if (
-        izenburuaSheet &&
-        irudiaSheet &&
-        !goiburuaDa(izenburuaSheet, "Izenburua")
-      ) {
-        izenburua = izenburuaSheet;
-        irudia = irudiaSheet;
-      }
-    });
-
-    edukia.innerHTML = irudia
-      ? `
-        <h2>📅 ${htmlBabestu(izenburua || "Ordutegia")}</h2>
-
-        <a href="${htmlBabestu(irudia)}" target="_blank">
-          <img
-            src="${htmlBabestu(irudia)}"
-            class="irudiHandia"
-            alt="${htmlBabestu(izenburua || "Ordutegia")}"
-          >
-        </a>
-      `
-      : `
-        <h2>📅 Ordutegia</h2>
-        <p>Oraindik ez da ordutegirik gehitu.</p>
-      `;
-
-  } catch (error) {
-    edukia.innerHTML = `
-      <h2>📅 Ordutegia</h2>
-      <p>Ezin izan da ordutegia kargatu.</p>
-      <small>${htmlBabestu(error.message)}</small>
-    `;
-  }
-}
-
-
-/* =========================================
-   KOKALEKU OROKORRAK
-========================================= */
-
-async function kokalekuakIkusi() {
-  const edukia = document.getElementById("edukia");
-
-  edukia.innerHTML = "<p>Kokalekuak kargatzen...</p>";
-
-  try {
-    const json = await sheetKargatu("Kokalekuak");
-
-    let izenburua = "";
-    let irudia = "";
-
-    json.table.rows.forEach(row => {
-      const izenburuaSheet = testuaGarbitu(gelaxka(row, 0));
-      const irudiaSheet = testuaGarbitu(gelaxka(row, 1));
-
-      if (
-        izenburuaSheet &&
-        irudiaSheet &&
-        !goiburuaDa(izenburuaSheet, "Izenburua")
-      ) {
-        izenburua = izenburuaSheet;
-        irudia = irudiaSheet;
-      }
-    });
-
-    edukia.innerHTML = irudia
-      ? `
-        <h2>📍 ${htmlBabestu(izenburua || "Kokalekuak")}</h2>
-
-        <a href="${htmlBabestu(irudia)}" target="_blank">
-          <img
-            src="${htmlBabestu(irudia)}"
-            class="irudiHandia"
-            alt="${htmlBabestu(izenburua || "Kokalekuak")}"
-          >
-        </a>
-      `
-      : `
-        <h2>📍 Kokalekuak</h2>
-        <p>Oraindik ez da kokalekuen irudirik gehitu.</p>
-      `;
-
-  } catch (error) {
-    edukia.innerHTML = `
-      <h2>📍 Kokalekuak</h2>
-      <p>Ezin izan dira kokalekuak kargatu.</p>
-      <small>${htmlBabestu(error.message)}</small>
-    `;
-  }
-}
-
-
-/* =========================================
-   EGUTEGIAK
-========================================= */
-
-function ikasturtekoEgutegiaIkusi() {
-  const edukia = document.getElementById("edukia");
-
-  if (!IKASTURTEKO_EGUTEGIA_URL) {
-    edukia.innerHTML = `
-      <h2>🗓️ Ikasturteko egutegia</h2>
-
-      <div class="txartela">
-        <p>
-          Google Calendarreko egutegia oraindik ez dago lotuta.
-        </p>
-      </div>
-    `;
-
-    return;
-  }
-
-  edukia.innerHTML = `
-    <h2>🗓️ Ikasturteko egutegia</h2>
-
-    <div class="txartela">
-      <a
-        class="esteka-botoia"
-        href="${htmlBabestu(IKASTURTEKO_EGUTEGIA_URL)}"
-        target="_blank"
-        rel="noopener"
-      >
-        🗓️ Egutegia ireki
-      </a>
-    </div>
+  return `
+    <article class="estatistika-txartela ${onclick ? "klikagarria" : ""}" ${onclick ? `onclick="${onclick}"` : ""}>
+      <svg viewBox="0 0 24 24">${ikonoak[mota]}</svg>
+      <strong>${zenbakia}</strong>
+      <span>${etiketa}</span>
+    </article>
   `;
 }
 
-
-function begiraleenEgutegiaIkusi() {
-  const edukia = document.getElementById("edukia");
-
-  if (!BEGIRALEEN_EGUTEGIA_URL) {
-    edukia.innerHTML = `
-      <h2>👨‍🏫 Begiraleen egutegia</h2>
-
-      <div class="txartela">
-        <p>
-          Google Calendarreko egutegia oraindik ez dago lotuta.
-        </p>
+function abisuTxartela(data, izenburua, mezua, taldea) {
+  return `
+    <article class="txartela abisu-txartela">
+      <div class="abisu-ikonoa">
+        <svg viewBox="0 0 24 24"><path d="M15 17H9m9-2V11a6 6 0 0 0-12 0v4l-2 2h16l-2-2"/></svg>
       </div>
-    `;
-
-    return;
-  }
-
-  edukia.innerHTML = `
-    <h2>👨‍🏫 Begiraleen egutegia</h2>
-
-    <div class="txartela">
-      <a
-        class="esteka-botoia"
-        href="${htmlBabestu(BEGIRALEEN_EGUTEGIA_URL)}"
-        target="_blank"
-        rel="noopener"
-      >
-        👨‍🏫 Egutegia ireki
-      </a>
-    </div>
+      <div>
+        <h3>${babestu(izenburua)}</h3>
+        <p>${babestu(mezua)}</p>
+        <small>${babestu(data)}${taldea ? ` · ${babestu(taldea)}` : ""}</small>
+      </div>
+    </article>
   `;
 }
-
-
-/* =========================================
-   TALDEAK
-========================================= */
 
 function taldeakIkusi() {
   const edukia = document.getElementById("edukia");
 
-  let html = `<h2>👥 Taldeak</h2>`;
+  let html = `
+    <div class="orrialde-goiburua">
+      <h2>Taldeak</h2>
+      <p>Aukeratu programa eta taldea.</p>
+    </div>
+  `;
 
   Object.entries(TALDEAK).forEach(([programa, taldeak]) => {
     html += `
       <section class="programa-atala">
-        <h3>${htmlBabestu(programa)}</h3>
-
+        <h3>${babestu(programa)}</h3>
         <div class="talde-botoiak">
-    `;
-
-    taldeak.forEach(taldea => {
-      html += `
-        <button onclick="partaideakIkusi('${taldea}')">
-          👥 ${taldea}
-        </button>
-      `;
-    });
-
-    html += `
+          ${taldeak.map(t => `<button onclick="partaideakIkusi('${t}')">${t}</button>`).join("")}
         </div>
       </section>
     `;
@@ -576,281 +288,301 @@ function taldeakIkusi() {
   edukia.innerHTML = html;
 }
 
-
-/* =========================================
-   PARTAIDEAK
-========================================= */
-
 async function partaideakIkusi(taldea) {
-  const edukia = document.getElementById("edukia");
-
-  edukia.innerHTML =
-    `<p>${htmlBabestu(taldea)} taldeko partaideak kargatzen...</p>`;
+  navAktiboaEzarri("taldeak");
+  kargatzenErakutsi();
 
   try {
     const json = await sheetKargatu("Partaideak");
 
     let html = `
-      <div class="atal-goiburua">
-        <button
-          class="atzera-botoia"
-          onclick="taldeakIkusi()"
-        >
-          ← Taldeak
-        </button>
-
-        <h2>👥 ${htmlBabestu(taldea)} – Partaideak</h2>
+      <button class="atzera-botoia" onclick="erakutsiAtala('taldeak')">← Taldeak</button>
+      <div class="orrialde-goiburua">
+        <h2>${babestu(taldea)}</h2>
+        <p>Taldeko partaideen informazioa.</p>
       </div>
-
-      <input
-        type="search"
-        id="bilatzailea"
-        placeholder="Bilatu partaidea..."
-        oninput="bilatuPartaideak()"
-        autocomplete="off"
-      >
-
+      <input type="search" id="bilatzailea" placeholder="Bilatu partaidea..." oninput="bilatuPartaideak()" autocomplete="off">
       <div id="partaideZerrenda">
     `;
 
     let kopurua = 0;
 
     json.table.rows.forEach(row => {
-      const id = testuaGarbitu(gelaxka(row, 0));
-      const taldeaSheet = testuaGarbitu(gelaxka(row, 1));
-      const izena = testuaGarbitu(gelaxka(row, 2));
-      const tutorea = testuaGarbitu(gelaxka(row, 3));
-      const telefonoa = testuaGarbitu(gelaxka(row, 4));
-      const alergiak = testuaGarbitu(gelaxka(row, 5));
-      const beldurrak = testuaGarbitu(gelaxka(row, 6));
-      const baimenak = testuaGarbitu(gelaxka(row, 7));
+      const id = garbitu(gelaxka(row, 0));
+      const taldeaSheet = garbitu(gelaxka(row, 1));
+      const izena = garbitu(gelaxka(row, 2));
+      const tutorea = garbitu(gelaxka(row, 3));
+      const telefonoa = garbitu(gelaxka(row, 4));
+      const alergiak = garbitu(gelaxka(row, 5));
+      const beldurrak = garbitu(gelaxka(row, 6));
+      const baimenak = garbitu(gelaxka(row, 7));
 
-      if (
-        taldeaSheet !== taldea ||
-        !izena ||
-        goiburuaDa(izena, "Izena")
-      ) {
-        return;
-      }
-
+      if (taldeaSheet !== taldea || !izena || goiburuaDa(izena, "Izena")) return;
       kopurua++;
 
-      const telefonoGarbitua =
-        telefonoa.replace(/[^\d+]/g, "");
+      const telefonoGarbitua = telefonoa.replace(/[^\d+]/g, "");
 
       html += `
         <article class="txartela partaide-txartela">
-          <h3>${htmlBabestu(izena)}</h3>
+          <div class="partaide-goiburua">
+            <div class="partaide-avatarra">${babestu(izena.charAt(0).toUpperCase())}</div>
+            <div>
+              <h3>${babestu(izena)}</h3>
+              <small>${babestu(taldea)}</small>
+            </div>
+          </div>
 
-          <p>
-            <strong>Tutorea:</strong>
-            ${htmlBabestu(tutorea || "—")}
-          </p>
+          <div class="partaide-datuak">
+            ${datuLerroa("Tutorea", tutorea || "—")}
+            ${datuLerroa("Telefonoa", telefonoa || "—", telefonoa ? `tel:${telefonoGarbitua}` : "")}
+            ${datuLerroa("Alergiak", alergiak || "—")}
+            ${datuLerroa("Beldurrak", beldurrak || "—")}
+            ${datuLerroa("Baimenak", baimenak || "—")}
+          </div>
 
-          <p>
-            <strong>Telefonoa:</strong>
-
-            ${
-              telefonoa
-                ? `
-                  <a href="tel:${htmlBabestu(telefonoGarbitua)}">
-                    ${htmlBabestu(telefonoa)}
-                  </a>
-                `
-                : "—"
-            }
-          </p>
-
-          <p>
-            <strong>Alergiak:</strong>
-            ${htmlBabestu(alergiak || "—")}
-          </p>
-
-          <p>
-            <strong>Beldurrak:</strong>
-            ${htmlBabestu(beldurrak || "—")}
-          </p>
-
-          <p>
-            <strong>Baimenak:</strong>
-            ${htmlBabestu(baimenak || "—")}
-          </p>
-
-          <small>ID: ${htmlBabestu(id)}</small>
+          <small>ID: ${babestu(id)}</small>
         </article>
       `;
     });
 
     html += `</div>`;
 
-    if (kopurua === 0) {
-      html += `
-        <div class="txartela">
-          <p>
-            Ez dago ${htmlBabestu(taldea)} taldeko partaiderik.
-          </p>
-        </div>
-      `;
+    if (!kopurua) {
+      html += `<article class="txartela"><p>Ez dago ${babestu(taldea)} taldeko partaiderik.</p></article>`;
     }
 
-    edukia.innerHTML = html;
-
+    document.getElementById("edukia").innerHTML = html;
   } catch (error) {
-    edukia.innerHTML = `
-      <h2>👥 ${htmlBabestu(taldea)} – Partaideak</h2>
-
-      <p>Ezin izan dira partaideak kargatu.</p>
-
-      <small>${htmlBabestu(error.message)}</small>
-    `;
+    document.getElementById("edukia").innerHTML = erroreTxartela(taldea, error);
   }
 }
 
+function datuLerroa(etiketa, balioa, esteka = "") {
+  return `
+    <div>
+      <strong>${babestu(etiketa)}</strong>
+      ${esteka
+        ? `<a href="${babestu(esteka)}">${babestu(balioa)}</a>`
+        : `<span>${babestu(balioa)}</span>`}
+    </div>
+  `;
+}
 
 function bilatuPartaideak() {
-  const bilatzailea = document.getElementById("bilatzailea");
+  const input = document.getElementById("bilatzailea");
+  if (!input) return;
 
-  if (!bilatzailea) {
-    return;
-  }
+  const bilaketa = input.value.toLowerCase().trim();
 
-  const bilaketa = bilatzailea.value
-    .toLowerCase()
-    .trim();
-
-  const txartelak =
-    document.querySelectorAll(".partaide-txartela");
-
-  txartelak.forEach(txartela => {
-    const testua = txartela.innerText.toLowerCase();
-
+  document.querySelectorAll(".partaide-txartela").forEach(txartela => {
     txartela.style.display =
-      testua.includes(bilaketa) ? "block" : "none";
+      txartela.innerText.toLowerCase().includes(bilaketa) ? "block" : "none";
   });
 }
 
-
-/* =========================================
-   DOKUMENTUAK
-========================================= */
-
-async function dokumentuakIkusi() {
-  const edukia = document.getElementById("edukia");
-
-  edukia.innerHTML = "<p>Dokumentuak kargatzen...</p>";
+async function abisuakIkusi() {
+  kargatzenErakutsi();
 
   try {
-    const json = await sheetKargatu("Dokumentuak");
-
-    let html = `<h2>📄 Dokumentuak</h2>`;
+    const json = await sheetKargatu("Abisuak");
+    let html = `
+      <div class="orrialde-goiburua">
+        <h2>Abisuak</h2>
+        <p>Eskola Kirolaren azken informazioa.</p>
+      </div>
+    `;
     let kopurua = 0;
 
-    json.table.rows.forEach(row => {
-      const izenburua = testuaGarbitu(gelaxka(row, 0));
-      const esteka = testuaGarbitu(gelaxka(row, 1));
+    json.table.rows.slice().reverse().forEach(row => {
+      const data = garbitu(gelaxka(row, 0));
+      const izenburua = garbitu(gelaxka(row, 1));
+      const mezua = garbitu(gelaxka(row, 2));
+      const taldea = garbitu(gelaxka(row, 3));
 
-      if (
-        !izenburua ||
-        !esteka ||
-        goiburuaDa(izenburua, "Izenburua")
-      ) {
-        return;
-      }
-
+      if (!izenburua || goiburuaDa(izenburua, "Izenburua")) return;
       kopurua++;
-
-      html += `
-        <div class="txartela">
-          <a
-            class="esteka-botoia"
-            href="${htmlBabestu(esteka)}"
-            target="_blank"
-            rel="noopener"
-          >
-            📄 ${htmlBabestu(izenburua)}
-          </a>
-        </div>
-      `;
+      html += abisuTxartela(data, izenburua, mezua, taldea);
     });
 
-    if (kopurua === 0) {
-      html += `
-        <div class="txartela">
-          <p>Oraindik ez da dokumenturik gehitu.</p>
-        </div>
-      `;
-    }
-
-    edukia.innerHTML = html;
-
+    if (!kopurua) html += `<article class="txartela"><p>Ez dago abisurik.</p></article>`;
+    document.getElementById("edukia").innerHTML = html;
   } catch (error) {
-    edukia.innerHTML = `
-      <h2>📄 Dokumentuak</h2>
-      <p>Ezin izan dira dokumentuak kargatu.</p>
-      <small>${htmlBabestu(error.message)}</small>
-    `;
+    document.getElementById("edukia").innerHTML = erroreTxartela("Abisuak", error);
   }
 }
 
+function egutegiakIkusi() {
+  document.getElementById("edukia").innerHTML = `
+    <div class="orrialde-goiburua">
+      <h2>Egutegiak</h2>
+      <p>Aukeratu ikusi nahi duzun egutegia.</p>
+    </div>
 
-/* =========================================
-   PROTOKOLOAK
-========================================= */
+    <section class="aukera-sarea">
+      ${aukeraBotoia("ikasturtekoEgutegiaIkusi()", "Ikasturteko egutegia", "egutegia")}
+      ${aukeraBotoia("begiraleenEgutegiaIkusi()", "Begiraleen egutegia", "begiraleak")}
+    </section>
+  `;
+}
+
+function ikasturtekoEgutegiaIkusi() {
+  egutegiEstekaIkusi("Ikasturteko egutegia", IKASTURTEKO_EGUTEGIA_URL);
+}
+
+function begiraleenEgutegiaIkusi() {
+  egutegiEstekaIkusi("Begiraleen egutegia", BEGIRALEEN_EGUTEGIA_URL);
+}
+
+function egutegiEstekaIkusi(izenburua, url) {
+  document.getElementById("edukia").innerHTML = `
+    <button class="atzera-botoia" onclick="erakutsiAtala('egutegiak')">← Egutegiak</button>
+    <div class="orrialde-goiburua"><h2>${babestu(izenburua)}</h2></div>
+    <article class="txartela">
+      ${url
+        ? `<a class="esteka-botoia" href="${babestu(url)}" target="_blank" rel="noopener">Egutegia ireki</a>`
+        : `<p>Google Calendar oraindik ez dago lotuta.</p>`}
+    </article>
+  `;
+}
+
+function agiriakIkusi() {
+  document.getElementById("edukia").innerHTML = `
+    <div class="orrialde-goiburua">
+      <h2>Agiriak</h2>
+      <p>Dokumentuak eta lan-protokoloak.</p>
+    </div>
+
+    <section class="aukera-sarea">
+      ${aukeraBotoia("dokumentuakIkusi()", "Dokumentuak", "dokumentua")}
+      ${aukeraBotoia("protokoloakIkusi()", "Protokoloak", "protokoloa")}
+    </section>
+  `;
+}
+
+async function dokumentuakIkusi() {
+  await estekaZerrendaIkusi("Dokumentuak", "Dokumentuak");
+}
 
 async function protokoloakIkusi() {
-  const edukia = document.getElementById("edukia");
+  await estekaZerrendaIkusi("Protokoloak", "Protokoloak");
+}
 
-  edukia.innerHTML = "<p>Protokoloak kargatzen...</p>";
+async function estekaZerrendaIkusi(sheetIzena, izenburua) {
+  kargatzenErakutsi();
 
   try {
-    const json = await sheetKargatu("Protokoloak");
+    const json = await sheetKargatu(sheetIzena);
 
-    let html = `<h2>📋 Protokoloak</h2>`;
+    let html = `
+      <button class="atzera-botoia" onclick="erakutsiAtala('agiriak')">← Agiriak</button>
+      <div class="orrialde-goiburua"><h2>${babestu(izenburua)}</h2></div>
+    `;
     let kopurua = 0;
 
     json.table.rows.forEach(row => {
-      const izenburua = testuaGarbitu(gelaxka(row, 0));
-      const esteka = testuaGarbitu(gelaxka(row, 1));
+      const izena = garbitu(gelaxka(row, 0));
+      const esteka = garbitu(gelaxka(row, 1));
 
-      if (
-        !izenburua ||
-        !esteka ||
-        goiburuaDa(izenburua, "Izenburua")
-      ) {
-        return;
-      }
-
+      if (!izena || !esteka || goiburuaDa(izena, "Izenburua")) return;
       kopurua++;
 
       html += `
-        <div class="txartela">
-          <a
-            class="esteka-botoia"
-            href="${htmlBabestu(esteka)}"
-            target="_blank"
-            rel="noopener"
-          >
-            📋 ${htmlBabestu(izenburua)}
+        <article class="txartela dokumentu-txartela">
+          <a href="${babestu(esteka)}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6V3Zm8 0v5h5M9 13h6m-6 4h6"/></svg>
+            <span>${babestu(izena)}</span>
           </a>
-        </div>
+        </article>
       `;
     });
 
-    if (kopurua === 0) {
-      html += `
-        <div class="txartela">
-          <p>Oraindik ez da protokolorik gehitu.</p>
-        </div>
-      `;
-    }
-
-    edukia.innerHTML = html;
-
+    if (!kopurua) html += `<article class="txartela"><p>Oraindik ez da edukirik gehitu.</p></article>`;
+    document.getElementById("edukia").innerHTML = html;
   } catch (error) {
-    edukia.innerHTML = `
-      <h2>📋 Protokoloak</h2>
-      <p>Ezin izan dira protokoloak kargatu.</p>
-      <small>${htmlBabestu(error.message)}</small>
-    `;
+    document.getElementById("edukia").innerHTML = erroreTxartela(izenburua, error);
   }
+}
+
+function gehiagoIkusi() {
+  document.getElementById("edukia").innerHTML = `
+    <div class="orrialde-goiburua">
+      <h2>Gehiago</h2>
+      <p>Eskola Kirolaren bestelako informazioa.</p>
+    </div>
+
+    <section class="aukera-sarea">
+      ${aukeraBotoia("ordutegiaIkusi()", "Ordutegia", "egutegia")}
+      ${aukeraBotoia("kokalekuakIkusi()", "Kokalekuak", "kokalekua")}
+      ${aukeraBotoia("erakutsiAtala('abisuak')", "Abisuak", "abisuak")}
+      ${aukeraBotoia("erakutsiAtala('agiriak')", "Agiriak", "dokumentua")}
+    </section>
+  `;
+}
+
+function aukeraBotoia(ekintza, testua, mota) {
+  const ikonoak = {
+    egutegia: `<path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>`,
+    begiraleak: `<path d="M12 3 3 8l9 5 9-5-9-5Zm-6 8v5c3 3 9 3 12 0v-5M21 9v6"/>`,
+    dokumentua: `<path d="M6 3h8l4 4v14H6V3Zm8 0v5h5M9 13h6m-6 4h6"/>`,
+    protokoloa: `<path d="M9 5h6m-8 2H5v14h14V7h-2M9 3h6v4H9V3Zm0 9h6m-6 4h6"/>`,
+    kokalekua: `<path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Zm0-9a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>`,
+    abisuak: `<path d="M15 17H9m9-2V11a6 6 0 0 0-12 0v4l-2 2h16l-2-2"/>`
+  };
+
+  return `
+    <button onclick="${ekintza}">
+      <svg viewBox="0 0 24 24">${ikonoak[mota]}</svg>
+      <span>${babestu(testua)}</span>
+    </button>
+  `;
+}
+
+async function ordutegiaIkusi() {
+  await irudiAtalaIkusi("Ordutegia", "Ordutegia");
+}
+
+async function kokalekuakIkusi() {
+  await irudiAtalaIkusi("Kokalekuak", "Kokalekuak");
+}
+
+async function irudiAtalaIkusi(sheetIzena, izenburua) {
+  kargatzenErakutsi();
+
+  try {
+    const json = await sheetKargatu(sheetIzena);
+    let irudiIzenburua = "";
+    let irudia = "";
+
+    json.table.rows.forEach(row => {
+      const iz = garbitu(gelaxka(row, 0));
+      const url = garbitu(gelaxka(row, 1));
+
+      if (iz && url && !goiburuaDa(iz, "Izenburua")) {
+        irudiIzenburua = iz;
+        irudia = url;
+      }
+    });
+
+    document.getElementById("edukia").innerHTML = `
+      <button class="atzera-botoia" onclick="erakutsiAtala('gehiago')">← Gehiago</button>
+      <div class="orrialde-goiburua"><h2>${babestu(irudiIzenburua || izenburua)}</h2></div>
+      ${irudia
+        ? `<a href="${babestu(irudia)}" target="_blank" rel="noopener">
+             <img src="${babestu(irudia)}" class="irudiHandia" alt="${babestu(irudiIzenburua || izenburua)}">
+           </a>`
+        : `<article class="txartela"><p>Oraindik ez da irudirik gehitu.</p></article>`}
+    `;
+  } catch (error) {
+    document.getElementById("edukia").innerHTML = erroreTxartela(izenburua, error);
+  }
+}
+
+function erroreTxartela(izenburua, error) {
+  return `
+    <div class="orrialde-goiburua"><h2>${babestu(izenburua)}</h2></div>
+    <article class="txartela">
+      <p>Ezin izan da edukia kargatu.</p>
+      <small>${babestu(error?.message || "Errore ezezaguna")}</small>
+    </article>
+  `;
 }
