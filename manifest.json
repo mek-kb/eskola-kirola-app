@@ -1,10 +1,10 @@
 {
-  "name": "Kirolez Blai 2026",
-  "short_name": "Kirolez Blai",
+  "name": "Mutrikuko Eskola Kirola",
+  "short_name": "Eskola Kirola",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#fbf7ee",
-  "theme_color": "#009688",
+  "background_color": "#F8F2CA",
+  "theme_color": "#002155",
   "orientation": "portrait",
   "icons": [
     {
