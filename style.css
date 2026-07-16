@@ -803,3 +803,215 @@ main {
     font-size: 24px;
   }
 }
+
+
+/* =========================================
+   DASHBOARD 2.2 — ZURE BENETAKO PROIEKTUAN
+========================================= */
+
+.dashboard-goiburua {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding: 16px;
+  border: 3px solid var(--urdina);
+  border-radius: 20px;
+  background-color: var(--beigea);
+  box-shadow: 0 5px 14px rgba(0, 33, 85, 0.11);
+}
+
+.dashboard-kaixo {
+  margin: 0;
+  color: var(--arrosa);
+  font-size: 23px;
+}
+
+.dashboard-goiburua h2 {
+  margin: 1px 0 0;
+  color: var(--urdina);
+  font-size: 31px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.dashboard-data {
+  margin: 8px 0 0;
+  color: var(--urdina);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+}
+
+.dashboard-goiburua img {
+  width: 64px;
+  height: 64px;
+  border: 3px solid var(--urdina);
+  border-radius: 17px;
+  object-fit: cover;
+}
+
+.estatistika-partaideak { background-color: var(--urdina); }
+.estatistika-abisuak { background-color: var(--arrosa); }
+.estatistika-alerta { background-color: var(--berdea); }
+.estatistika-egutegia { background-color: var(--beigea); }
+
+.estatistika-partaideak strong,
+.estatistika-partaideak span,
+.estatistika-abisuak strong,
+.estatistika-abisuak span {
+  color: var(--beigea);
+}
+
+.estatistika-egutegia strong,
+.estatistika-egutegia span {
+  color: var(--urdina);
+}
+
+.gaurko-jarduerak {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding: 15px;
+  border-radius: 18px;
+  background-color: var(--urdina);
+  color: var(--beigea);
+  box-shadow: 0 5px 14px rgba(0, 33, 85, 0.18);
+}
+
+.gaurko-jarduerak h3 {
+  margin: 0;
+  color: var(--beigea);
+  font-size: 23px;
+  font-weight: 400;
+}
+
+.gaurko-jarduerak p {
+  margin: 4px 0 0;
+  color: var(--beigea);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  line-height: 1.35;
+  opacity: .88;
+}
+
+.gaurko-jarduerak button {
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 11px;
+  background-color: var(--berdea);
+  color: var(--urdina);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.programa-zerrenda {
+  display: grid;
+  gap: 10px;
+}
+
+.programa-lerroa {
+  padding: 13px;
+  border: 3px solid var(--urdina);
+  border-radius: 18px;
+  background-color: var(--berdea);
+  box-shadow: 0 4px 11px rgba(0, 33, 85, 0.10);
+}
+
+.programa-izenburua {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 9px;
+  color: var(--beigea);
+}
+
+.programa-izenburua span {
+  font-size: 24px;
+}
+
+.programa-izenburua strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background-color: var(--urdina);
+  color: var(--beigea);
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.programa-taldeak-trinkoa {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.programa-taldeak-trinkoa button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 7px 9px;
+  border: 2px solid var(--urdina);
+  border-radius: 11px;
+  background-color: var(--beigea);
+  color: var(--urdina);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.programa-taldeak-trinkoa button strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background-color: var(--urdina);
+  color: var(--beigea);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.beheko-menua button.nav-aktiboa {
+  opacity: 1;
+}
+
+.beheko-menua button.nav-aktiboa svg {
+  stroke: var(--berdea);
+  transform: translateY(-1px) scale(1.08);
+}
+
+.beheko-menua button.nav-aktiboa span {
+  color: var(--berdea);
+}
+
+@media (max-width: 430px) {
+  .programa-taldeak-trinkoa {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .dashboard-goiburua h2 {
+    font-size: 27px;
+  }
+
+  .gaurko-jarduerak {
+    grid-template-columns: 1fr;
+  }
+
+  .gaurko-jarduerak button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 350px) {
+  .programa-taldeak-trinkoa {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
