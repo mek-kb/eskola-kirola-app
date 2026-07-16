@@ -2,161 +2,78 @@
 <html lang="eu">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Mutrikuko Eskola Kirola</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Boogaloo&display=swap"
-    rel="stylesheet"
-  >
+  <link href="https://fonts.googleapis.com/css2?family=Boogaloo&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="images/icon.512.png">
-
   <meta name="theme-color" content="#002155">
 </head>
 
 <body>
-
-  <!-- SPLASH PANTAILA -->
   <div id="splash">
     <div class="splash-edukia">
-
-      <img
-        src="images/icon.512.png"
-        alt="MEKE logoa"
-        class="splash-logoa"
-      >
-
+      <img src="images/icon.512.png" alt="MEKE logoa" class="splash-logoa">
       <p class="splash-marka">MEKE</p>
-
       <h1>Mutrikuko Eskola Kirola</h1>
-
-      <p class="splash-azpititulua">
-        Langileentzako aplikazioa
-      </p>
-
-      <p class="splash-ikasturtea">
-        2026–2027
-      </p>
-
-      <div class="splash-puntuak">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-
+      <p class="splash-azpititulua">Langileentzako aplikazioa</p>
+      <p class="splash-ikasturtea">2026–2027</p>
+      <div class="splash-puntuak"><span></span><span></span><span></span></div>
     </div>
   </div>
 
-
-  <!-- APLIKAZIOA -->
   <div id="aplikazioa" class="aplikazioa-ezkutuan">
-
     <header>
       <div class="header-edukia">
-
         <div class="header-testua">
           <p class="header-marka">MEKE</p>
           <h1>Mutrikuko Eskola Kirola</h1>
-          <p>Langileentzako aplikazioa</p>
+          <p class="header-azpititulua">Langileentzako aplikazioa</p>
         </div>
-
-        <img
-          src="images/icon.192.png"
-          alt="MEKE logoa"
-          class="header-logoa"
-        >
-
+        <img src="images/icon.192.png" alt="MEKE logoa" class="header-logoa">
       </div>
     </header>
 
-
     <main>
       <section id="edukia">
-        <p>Hasiera kargatzen...</p>
+        <div class="kargatzen"><span></span><span></span><span></span></div>
       </section>
     </main>
 
-
-    <!-- BEHEKO MENU FINKOA -->
-    <nav class="beheko-menua">
-
-      <button
-        id="nav-hasiera"
-        class="nav-aktiboa"
-        onclick="erakutsiAtala('hasiera')"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M3 11.5 12 4l9 7.5M5.5 10.5V20h13v-9.5M9.5 20v-6h5v6"
-          />
-        </svg>
+    <nav class="beheko-menua" aria-label="Nabigazio nagusia">
+      <button id="nav-hasiera" class="nav-aktiboa" onclick="erakutsiAtala('hasiera')">
+        <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 10.5V20h13v-9.5M9.5 20v-6h5v6"/></svg>
         <span>Hasiera</span>
       </button>
 
-      <button
-        id="nav-taldeak"
-        onclick="erakutsiAtala('taldeak')"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7-1a3 3 0 1 0 0-6m-7 9c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5Zm7 1c3 0 6 1.5 6 4v2h-5"
-          />
-        </svg>
+      <button id="nav-taldeak" onclick="erakutsiAtala('taldeak')">
+        <svg viewBox="0 0 24 24"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7-1a3 3 0 1 0 0-6m-7 9c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5Zm7 1c3 0 6 1.5 6 4v2h-5"/></svg>
         <span>Taldeak</span>
       </button>
 
-      <button
-        id="nav-egutegiak"
-        onclick="erakutsiAtala('egutegiak')"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Zm3 4h3m2 0h3m-8 4h3m2 0h3"
-          />
-        </svg>
+      <button id="nav-egutegiak" onclick="erakutsiAtala('egutegiak')">
+        <svg viewBox="0 0 24 24"><path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Zm3 4h3m2 0h3m-8 4h3m2 0h3"/></svg>
         <span>Egutegiak</span>
       </button>
 
-      <button
-        id="nav-dokumentuak"
-        onclick="erakutsiAtala('dokumentuAtala')"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M6 3h8l4 4v14H6V3Zm8 0v5h5M9 13h6m-6 4h6"
-          />
-        </svg>
+      <button id="nav-agiriak" onclick="erakutsiAtala('agiriak')">
+        <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6V3Zm8 0v5h5M9 13h6m-6 4h6"/></svg>
         <span>Agiriak</span>
       </button>
 
-      <button
-        id="nav-gehiago"
-        onclick="erakutsiAtala('gehiago')"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 12h.01M12 12h.01M19 12h.01"/>
-        </svg>
+      <button id="nav-gehiago" onclick="erakutsiAtala('gehiago')">
+        <svg viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01"/></svg>
         <span>Gehiago</span>
       </button>
-
     </nav>
-
   </div>
 
-
   <script src="app.js"></script>
-
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
@@ -166,20 +83,14 @@
       erakutsiAtala("hasiera");
 
       setTimeout(() => {
-        document
-          .getElementById("splash")
-          .classList.add("splash-ezkutatu");
-
-        document
-          .getElementById("aplikazioa")
-          .classList.remove("aplikazioa-ezkutuan");
+        document.getElementById("splash").classList.add("splash-ezkutatu");
+        document.getElementById("aplikazioa").classList.remove("aplikazioa-ezkutuan");
 
         setTimeout(() => {
           document.getElementById("splash").style.display = "none";
         }, 600);
-      }, 1800);
+      }, 1600);
     });
   </script>
-
 </body>
 </html>
