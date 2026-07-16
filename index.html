@@ -10,9 +10,9 @@
 
   <title>Mutrikuko Eskola Kirola</title>
 
-  <!-- Boogaloo letra-tipoa -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Boogaloo&display=swap"
     rel="stylesheet"
@@ -22,7 +22,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="images/icon.512.png">
 
-  <meta name="theme-color" content="#709f1d">
+  <meta name="theme-color" content="#002155">
 </head>
 
 <body>
@@ -30,15 +30,16 @@
   <!-- SPLASH PANTAILA -->
   <div id="splash">
     <div class="splash-edukia">
+
       <img
         src="images/icon.512.png"
-        alt="Mutrikuko Eskola Kirola"
+        alt="MEKE logoa"
         class="splash-logoa"
       >
 
       <p class="splash-marka">MEKE</p>
 
-      <h1>Mutrikuko Eskola Kirola</h1>
+      <h1>Mutrikuko<br>Eskola Kirola</h1>
 
       <p class="splash-azpititulua">
         Langileentzako aplikazioa
@@ -48,11 +49,12 @@
         2026–2027
       </p>
 
-      <div class="splash-kargatzen">
+      <div class="splash-puntuak">
         <span></span>
         <span></span>
         <span></span>
       </div>
+
     </div>
   </div>
 
@@ -69,98 +71,85 @@
           class="header-logoa"
         >
 
-        <div>
+        <div class="header-testua">
           <p class="header-marka">MEKE</p>
+
           <h1>Mutrikuko Eskola Kirola</h1>
+
           <p class="header-azpititulua">
             Langileentzako aplikazioa
           </p>
         </div>
 
       </div>
+
+      <div class="header-uhina"></div>
     </header>
+
 
     <main>
 
       <nav class="menu-nagusia">
 
         <button onclick="erakutsiAtala('hasiera')">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M3 11.5 12 4l9 7.5M5.5 10.5V20h13v-9.5M9.5 20v-6h5v6"
-            />
+          <svg viewBox="0 0 24 24">
+            <path d="M3 11.5 12 4l9 7.5M5.5 10.5V20h13v-9.5M9.5 20v-6h5v6"/>
           </svg>
           <span>Hasiera</span>
         </button>
 
         <button onclick="erakutsiAtala('abisuak')">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M15 17H9m9-2V11a6 6 0 0 0-12 0v4l-2 2h16l-2-2Zm-7 5h2"
-            />
+          <svg viewBox="0 0 24 24">
+            <path d="M15 17H9m9-2V11a6 6 0 0 0-12 0v4l-2 2h16l-2-2Zm-7 5h2"/>
           </svg>
           <span>Abisuak</span>
         </button>
 
         <button onclick="erakutsiAtala('ordutegia')">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"
-            />
+          <svg viewBox="0 0 24 24">
+            <path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>
           </svg>
           <span>Ordutegia</span>
         </button>
 
         <button onclick="erakutsiAtala('kokalekuak')">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Zm0-9a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-            />
+          <svg viewBox="0 0 24 24">
+            <path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Zm0-9a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
           </svg>
           <span>Kokalekuak</span>
         </button>
 
         <button onclick="erakutsiAtala('ikasturtekoEgutegia')">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Zm3 8h3m2 0h3m-8 4h3m2 0h3"
-            />
+          <svg viewBox="0 0 24 24">
+            <path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Zm3 8h3m2 0h3m-8 4h3m2 0h3"/>
           </svg>
           <span>Ikasturteko egutegia</span>
         </button>
 
         <button onclick="erakutsiAtala('begiraleenEgutegia')">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M12 3 3 8l9 5 9-5-9-5Zm-6 8v5c3 3 9 3 12 0v-5M21 9v6"
-            />
+          <svg viewBox="0 0 24 24">
+            <path d="M12 3 3 8l9 5 9-5-9-5Zm-6 8v5c3 3 9 3 12 0v-5M21 9v6"/>
           </svg>
           <span>Begiraleen egutegia</span>
         </button>
 
         <button onclick="erakutsiAtala('taldeak')">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7-1a3 3 0 1 0 0-6m-7 9c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5Zm7 1c3 0 6 1.5 6 4v2h-5"
-            />
+          <svg viewBox="0 0 24 24">
+            <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7-1a3 3 0 1 0 0-6m-7 9c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5Zm7 1c3 0 6 1.5 6 4v2h-5"/>
           </svg>
           <span>Taldeak</span>
         </button>
 
         <button onclick="erakutsiAtala('dokumentuak')">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M6 3h8l4 4v14H6V3Zm8 0v5h5M9 13h6m-6 4h6"
-            />
+          <svg viewBox="0 0 24 24">
+            <path d="M6 3h8l4 4v14H6V3Zm8 0v5h5M9 13h6m-6 4h6"/>
           </svg>
           <span>Dokumentuak</span>
         </button>
 
         <button onclick="erakutsiAtala('protokoloak')">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M9 5h6m-8 2H5v14h14V7h-2M9 3h6v4H9V3Zm0 9h6m-6 4h6"
-            />
+          <svg viewBox="0 0 24 24">
+            <path d="M9 5h6m-8 2H5v14h14V7h-2M9 3h6v4H9V3Zm0 9h6m-6 4h6"/>
           </svg>
           <span>Protokoloak</span>
         </button>
@@ -172,6 +161,47 @@
       </section>
 
     </main>
+
+
+    <!-- BEHEKO NABIGAZIOA -->
+    <nav class="beheko-menua">
+
+      <button onclick="erakutsiAtala('hasiera')">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 11.5 12 4l9 7.5M5.5 10.5V20h13v-9.5M9.5 20v-6h5v6"/>
+        </svg>
+        <span>Hasiera</span>
+      </button>
+
+      <button onclick="erakutsiAtala('abisuak')">
+        <svg viewBox="0 0 24 24">
+          <path d="M15 17H9m9-2V11a6 6 0 0 0-12 0v4l-2 2h16l-2-2Zm-7 5h2"/>
+        </svg>
+        <span>Abisuak</span>
+      </button>
+
+      <button onclick="erakutsiAtala('ordutegia')">
+        <svg viewBox="0 0 24 24">
+          <path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>
+        </svg>
+        <span>Ordutegia</span>
+      </button>
+
+      <button onclick="erakutsiAtala('taldeak')">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7-1a3 3 0 1 0 0-6m-7 9c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5Zm7 1c3 0 6 1.5 6 4v2h-5"/>
+        </svg>
+        <span>Taldeak</span>
+      </button>
+
+      <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 12h.01M12 12h.01M19 12h.01"/>
+        </svg>
+        <span>Menua</span>
+      </button>
+
+    </nav>
 
   </div>
 
