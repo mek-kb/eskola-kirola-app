@@ -629,3 +629,177 @@ main {
   .estatistika-sarea { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .aukera-sarea { grid-template-columns: 1fr; }
 }
+
+
+/* =========================================
+   2.1 DISEINU FINDUA
+========================================= */
+
+/* Header trinkoagoa */
+header {
+  padding:
+    calc(12px + env(safe-area-inset-top))
+    16px
+    12px;
+}
+
+.header-logoa {
+  width: 58px;
+  height: 58px;
+  border-radius: 15px;
+}
+
+.header-marka {
+  font-size: 15px;
+}
+
+header h1 {
+  font-size: clamp(24px, 6vw, 32px);
+}
+
+.header-azpititulua {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+/* Eduki gehiago lehen pantailan */
+main {
+  padding-top: 14px;
+}
+
+/* Ongietorri txartel trinkoagoa */
+.ongietorri-txartela {
+  margin-bottom: 10px;
+  padding: 14px;
+  border-radius: 17px;
+}
+
+.ongietorri-testua {
+  font-size: 20px;
+}
+
+.ongietorri-txartela h2 {
+  font-size: 27px;
+}
+
+.ongietorri-txartela img {
+  width: 58px;
+  height: 58px;
+  border-radius: 15px;
+}
+
+/* Estatistika txartel trinkoagoak */
+.estatistika-sarea {
+  gap: 7px;
+  margin-bottom: 20px;
+}
+
+.estatistika-txartela {
+  padding: 10px 3px;
+  border-radius: 14px;
+}
+
+.estatistika-txartela svg {
+  width: 22px;
+  height: 22px;
+}
+
+.estatistika-txartela strong {
+  font-size: 23px;
+}
+
+.estatistika-txartela span {
+  font-size: 10px;
+}
+
+/* Programa bloke trinkoagoak */
+.dashboard-programa {
+  margin-bottom: 9px;
+  padding: 12px;
+  border-radius: 16px;
+}
+
+.dashboard-programa h3 {
+  margin-bottom: 8px;
+  font-size: 22px;
+}
+
+.dashboard-taldeak {
+  gap: 6px;
+}
+
+.dashboard-taldeak button {
+  min-height: 42px;
+  padding: 7px 9px;
+  font-size: 16px;
+}
+
+.dashboard-taldeak button strong {
+  min-width: 24px;
+  height: 24px;
+  font-size: 13px;
+}
+
+/* Atal izenburuak trinkoagoak */
+.atal-izenburua {
+  margin: 22px 0 10px;
+}
+
+.atal-izenburua h2 {
+  font-size: 25px;
+}
+
+/* Txartel leunagoak */
+.txartela {
+  margin-bottom: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 33, 85, 0.10);
+}
+
+/* Beheko menu finduagoa */
+.beheko-menua {
+  min-height: 68px;
+  padding-top: 5px;
+}
+
+.beheko-menua button {
+  font-size: 11px;
+}
+
+.beheko-menua svg {
+  width: 24px;
+  height: 24px;
+}
+
+.beheko-menua button.nav-aktiboa::before {
+  top: -5px;
+  width: 30px;
+}
+
+/* Ordenagailuan hover efektu leuna */
+@media (hover: hover) {
+  .dashboard-taldeak button:hover,
+  .talde-botoiak button:hover,
+  .aukera-sarea button:hover,
+  .atal-izenburua button:hover,
+  .atzera-botoia:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+  }
+}
+
+/* Mugikor txikietan ere 4 estatistika txartel lerro berean */
+@media (max-width: 430px) {
+  .estatistika-sarea {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .estatistika-txartela {
+    min-height: 78px;
+  }
+
+  .ongietorri-txartela h2 {
+    font-size: 24px;
+  }
+}

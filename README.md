@@ -1,20 +1,11 @@
-# Mutrikuko Eskola Kirola 2.0
+# Mutrikuko Eskola Kirola 2.1
 
-GitHub Pages-erako prestatutako PWA.
+Bertsio honetan:
+- Header trinkoagoa
+- Estatistika txartel txikiagoak
+- Programa bloke trinkoagoak
+- Beheko menu finduagoa
+- Mugikorrean informazio gehiago lehen pantailan
 
-## Ordezkatu beharreko fitxategiak
-
-- index.html
-- app.js
-- style.css
-- service-worker.js
-- manifest.json
-
-## Mantendu zure images karpeta
-
-Karpeta honetan gutxienez fitxategi hauek egon behar dira:
-
-- images/icon.192.png
-- images/icon.512.png
-
-Google Sheet ID berria dagoeneko app.js barruan dago.
+GitHub-era igo eta lehengo izen bereko fitxategiak ordezkatu.
+`images` karpeta mantendu.
