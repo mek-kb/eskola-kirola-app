@@ -1,4 +1,4 @@
-const CACHE_NAME = "eskola-kirola-benetan-2-2-v1";
+const CACHE_NAME = "eskola-kirola-app-fix-v1";
 
 const FILES_TO_CACHE = [
   "./",
