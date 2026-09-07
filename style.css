@@ -1,30 +1,37 @@
 :root {
   --urdina: #002155;
   --beigea: #F8F2CA;
-  --berdea: #709f1d;
-  --arrosa: #c2196c;
-  --zuria: #ffffff;
+  --berdea: #709F1D;
+  --arrosa: #C2196C;
+  --zuria: #FFFFFF;
+  --testu-grisa: #46505E;
+  --lerroa: rgba(0, 33, 85, .14);
+  --itzala: 0 8px 24px rgba(0, 33, 85, .10);
 }
 
 * { box-sizing: border-box; }
 
 html {
   margin: 0;
-  background-color: var(--beigea);
+  background: var(--beigea);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  padding: 0 0 88px;
-  background-color: var(--beigea);
+  padding-bottom: calc(78px + env(safe-area-inset-bottom));
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.45) 0, rgba(255,255,255,0) 260px),
+    var(--beigea);
   color: var(--urdina);
   font-family: "Boogaloo", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 button, input, a { font-family: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
 
+/* SPLASH */
 #splash {
   position: fixed;
   inset: 0;
@@ -33,9 +40,9 @@ button, input, a { font-family: inherit; }
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background-color: var(--beigea);
+  background: var(--beigea);
   opacity: 1;
-  transition: opacity .55s ease, visibility .55s ease;
+  transition: opacity .5s ease, visibility .5s ease;
 }
 
 #splash.splash-ezkutatu {
@@ -46,31 +53,30 @@ button, input, a { font-family: inherit; }
 
 .splash-edukia {
   width: 100%;
-  max-width: 390px;
+  max-width: 420px;
   text-align: center;
 }
 
 .splash-logoa {
   display: block;
-  width: 145px;
-  height: 145px;
+  width: 132px;
+  height: 132px;
   margin: 0 auto 20px;
-  border-radius: 34px;
+  border-radius: 28px;
   object-fit: cover;
-  box-shadow: 0 14px 30px rgba(0,33,85,.18);
+  box-shadow: var(--itzala);
 }
 
 .splash-marka {
   margin: 0;
   color: var(--arrosa);
-  font-size: 30px;
-  letter-spacing: 4px;
+  font-size: 22px;
+  letter-spacing: 5px;
 }
 
 .splash-edukia h1 {
-  margin: 8px 0 4px;
-  color: var(--urdina);
-  font-size: clamp(38px,10vw,54px);
+  margin: 8px 0 0;
+  font-size: clamp(42px, 11vw, 58px);
   font-weight: 400;
   line-height: .98;
 }
@@ -78,7 +84,7 @@ button, input, a { font-family: inherit; }
 .splash-azpititulua {
   margin: 14px 0 0;
   color: var(--berdea);
-  font-size: 22px;
+  font-size: 21px;
 }
 
 .splash-ikasturtea {
@@ -86,155 +92,228 @@ button, input, a { font-family: inherit; }
   margin: 15px 0 0;
   padding: 7px 18px;
   border-radius: 999px;
-  background-color: var(--arrosa);
+  background: var(--urdina);
   color: var(--beigea);
-  font-size: 21px;
+  font-size: 20px;
 }
 
-.splash-puntuak, .kargatzen {
+.splash-puntuak,
+.kargatzen {
   display: flex;
   justify-content: center;
-  gap: 9px;
+  gap: 8px;
 }
 
 .splash-puntuak { margin-top: 28px; }
-.kargatzen { padding: 50px 0; }
+.kargatzen { padding: 64px 0; }
 
-.splash-puntuak span, .kargatzen span {
-  width: 10px;
-  height: 10px;
+.splash-puntuak span,
+.kargatzen span {
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background-color: var(--berdea);
+  background: var(--berdea);
   animation: puntu-kargatzen 1s infinite ease-in-out;
 }
 
-.splash-puntuak span:nth-child(2), .kargatzen span:nth-child(2) { animation-delay: .15s; }
-.splash-puntuak span:nth-child(3), .kargatzen span:nth-child(3) { animation-delay: .3s; }
+.splash-puntuak span:nth-child(2),
+.kargatzen span:nth-child(2) { animation-delay: .15s; }
+
+.splash-puntuak span:nth-child(3),
+.kargatzen span:nth-child(3) { animation-delay: .3s; }
 
 @keyframes puntu-kargatzen {
-  0%,70%,100% { transform: translateY(0); opacity: .35; }
-  35% { transform: translateY(-8px); opacity: 1; }
+  0%, 70%, 100% { transform: translateY(0); opacity: .35; }
+  35% { transform: translateY(-7px); opacity: 1; }
 }
 
-#aplikazioa { opacity: 1; transition: opacity .45s ease; }
+#aplikazioa { opacity: 1; transition: opacity .35s ease; }
 #aplikazioa.aplikazioa-ezkutuan { opacity: 0; }
 
+/* HEADER */
 header {
-  padding: calc(18px + env(safe-area-inset-top)) 18px 18px;
-  background-color: var(--urdina);
+  padding:
+    calc(13px + env(safe-area-inset-top))
+    18px
+    13px;
+  background: var(--urdina);
   color: var(--beigea);
-  box-shadow: 0 4px 16px rgba(0,33,85,.22);
 }
 
 .header-edukia {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
+  gap: 16px;
   width: 100%;
-  max-width: 760px;
+  max-width: 820px;
   margin: 0 auto;
 }
 
-.header-testua { flex: 1; }
+.header-testua { min-width: 0; }
 
 .header-marka {
-  margin: 0;
-  color: var(--beigea);
-  font-size: 18px;
-  letter-spacing: 3px;
+  margin: 0 0 2px;
+  color: var(--berdea);
+  font-size: 14px;
+  letter-spacing: 4px;
 }
 
 header h1 {
-  margin: 2px 0 0;
+  margin: 0;
   color: var(--beigea);
-  font-size: clamp(27px,7vw,37px);
+  font-size: clamp(26px, 6.3vw, 34px);
   font-weight: 400;
   line-height: 1;
 }
 
 .header-azpititulua {
-  margin: 6px 0 0;
-  color: var(--beigea);
-  font-size: 16px;
+  margin: 5px 0 0;
+  color: rgba(248,242,202,.85);
+  font-size: 13px;
 }
 
 .header-logoa {
-  width: 72px;
-  height: 72px;
-  border: 3px solid var(--beigea);
-  border-radius: 18px;
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border: 2px solid rgba(248,242,202,.85);
+  border-radius: 14px;
   object-fit: cover;
 }
 
+/* EDUKIA */
 main {
   width: 100%;
-  max-width: 760px;
+  max-width: 820px;
   margin: 0 auto;
-  padding: 18px 14px calc(36px + env(safe-area-inset-bottom));
+  padding: 22px 16px calc(26px + env(safe-area-inset-bottom));
 }
 
-.orrialde-goiburua { margin-bottom: 18px; }
+.orrialde-goiburua {
+  margin: 4px 0 22px;
+}
 
 .orrialde-goiburua h2 {
   margin: 0;
-  color: var(--urdina);
-  font-size: 37px;
+  font-size: clamp(38px, 9vw, 50px);
   font-weight: 400;
+  line-height: .96;
 }
 
 .orrialde-goiburua p {
-  margin: 4px 0 0;
-  color: var(--urdina);
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  font-size: 15px;
+  margin: 8px 0 0;
+  color: var(--testu-grisa);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
 }
 
+/* HASIERA — webgunearen estilora */
 .ongietorri-txartela {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  margin-bottom: 14px;
-  padding: 18px;
-  border-radius: 20px;
-  background-color: var(--urdina);
-  color: var(--beigea);
-  box-shadow: 0 6px 16px rgba(0,33,85,.20);
+  gap: 18px;
+  margin-bottom: 18px;
+  padding: 23px 20px;
+  border-radius: 8px;
+  background: var(--zuria);
+  box-shadow: var(--itzala);
 }
 
 .ongietorri-testua {
-  margin: 0;
-  color: var(--berdea);
-  font-size: 24px;
+  margin: 0 0 3px;
+  color: var(--arrosa);
+  font-size: 20px;
+  letter-spacing: 1px;
 }
 
 .ongietorri-txartela h2 {
-  margin: 2px 0 0;
-  color: var(--beigea);
-  font-size: 31px;
+  margin: 0;
+  color: var(--urdina);
+  font-size: clamp(34px, 8vw, 47px);
   font-weight: 400;
-  line-height: 1;
+  line-height: .95;
 }
 
 .gaurko-data {
-  margin: 9px 0 0;
-  color: var(--beigea);
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  margin: 10px 0 0;
+  color: var(--testu-grisa);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 13px;
 }
 
 .ongietorri-txartela img {
-  width: 70px;
-  height: 70px;
-  border: 3px solid var(--beigea);
-  border-radius: 18px;
+  width: 74px;
+  height: 74px;
+  border-radius: 16px;
   object-fit: cover;
 }
 
+.web-atalak {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.web-atal-botoia {
+  position: relative;
+  min-height: 116px;
+  overflow: hidden;
+  padding: 17px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--urdina);
+  color: var(--beigea);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0,33,85,.13);
+}
+
+.web-atal-botoia:nth-child(2) { background: var(--berdea); }
+.web-atal-botoia:nth-child(3) { background: var(--arrosa); }
+.web-atal-botoia:nth-child(4) {
+  border: 2px solid var(--urdina);
+  background: var(--zuria);
+  color: var(--urdina);
+}
+
+.web-atal-botoia span {
+  display: block;
+  max-width: 90%;
+  font-size: 25px;
+  line-height: .98;
+}
+
+.web-atal-botoia small {
+  display: block;
+  margin-top: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 11px;
+  line-height: 1.35;
+  opacity: .85;
+}
+
+.web-atal-botoia svg {
+  position: absolute;
+  right: 13px;
+  bottom: 12px;
+  width: 33px;
+  height: 33px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .35;
+}
+
+/* ESTATISTIKAK */
 .estatistika-sarea {
   display: grid;
-  grid-template-columns: repeat(4,minmax(0,1fr));
+  grid-template-columns: repeat(4, minmax(0,1fr));
   gap: 8px;
   margin-bottom: 26px;
 }
@@ -244,13 +323,13 @@ main {
   flex-direction: column;
   align-items: center;
   min-width: 0;
-  padding: 13px 4px;
-  border: 2px solid var(--urdina);
-  border-radius: 16px;
-  background-color: var(--berdea);
-  color: var(--beigea);
+  padding: 11px 4px;
+  border: 1px solid var(--lerroa);
+  border-radius: 7px;
+  background: var(--zuria);
+  color: var(--urdina);
   text-align: center;
-  box-shadow: 0 3px 8px rgba(0,33,85,.12);
+  box-shadow: 0 3px 11px rgba(0,33,85,.06);
 }
 
 .estatistika-txartela svg,
@@ -266,81 +345,83 @@ main {
 }
 
 .estatistika-txartela svg {
-  width: 25px;
-  height: 25px;
+  width: 22px;
+  height: 22px;
   margin-bottom: 4px;
-  stroke: var(--urdina);
+  stroke: var(--berdea);
 }
 
 .estatistika-txartela strong {
-  color: var(--beigea);
-  font-size: 27px;
+  font-size: 24px;
   font-weight: 400;
   line-height: 1;
 }
 
 .estatistika-txartela span {
   margin-top: 4px;
-  color: var(--beigea);
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  font-size: 11px;
+  color: var(--testu-grisa);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 10px;
 }
 
 .klikagarria { cursor: pointer; }
 
+/* ATAL IZENBURUAK */
 .atal-izenburua {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin: 27px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--urdina);
 }
 
 .atal-izenburua h2 {
   margin: 0;
-  color: var(--urdina);
-  font-size: 28px;
+  font-size: 29px;
   font-weight: 400;
+  line-height: 1;
 }
 
 .atal-izenburua button,
 .atzera-botoia {
   border: 0;
-  border-radius: 11px;
-  background-color: var(--urdina);
+  border-radius: 999px;
+  background: var(--urdina);
   color: var(--beigea);
   cursor: pointer;
 }
 
-.atal-izenburua button { padding: 7px 11px; font-size: 15px; }
-.atzera-botoia { margin-bottom: 13px; padding: 9px 14px; font-size: 17px; }
-
-.dashboard-programa,
-.programa-atala,
-.txartela {
-  border: 3px solid var(--urdina);
-  border-radius: 18px;
-  background-color: var(--berdea);
-  color: var(--beigea);
-  box-shadow: 0 5px 13px rgba(0,33,85,.12);
+.atal-izenburua button {
+  padding: 7px 12px;
+  font-size: 14px;
 }
 
-.dashboard-programa {
+.atzera-botoia {
+  margin-bottom: 15px;
+  padding: 8px 13px;
+  font-size: 16px;
+}
+
+/* PROGRAMAK */
+.dashboard-programa,
+.programa-atala {
   margin-bottom: 12px;
-  padding: 15px;
+  padding: 17px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--zuria);
+  box-shadow: var(--itzala);
 }
 
 .dashboard-programa h3,
-.programa-atala h3,
-.txartela h3 {
-  margin: 0 0 10px;
-  color: var(--beigea);
+.programa-atala h3 {
+  margin: 0 0 11px;
+  color: var(--urdina);
+  font-size: 27px;
   font-weight: 400;
 }
-
-.dashboard-programa h3 { font-size: 25px; }
-.programa-atala h3 { font-size: 27px; }
-.txartela h3 { font-size: 23px; }
 
 .dashboard-taldeak,
 .talde-botoiak {
@@ -349,77 +430,78 @@ main {
   gap: 8px;
 }
 
+.dashboard-taldeak button,
+.talde-botoiak button {
+  min-height: 47px;
+  padding: 8px 10px;
+  border: 2px solid var(--urdina);
+  border-radius: 5px;
+  background: var(--beigea);
+  color: var(--urdina);
+  font-size: 17px;
+  cursor: pointer;
+}
+
 .dashboard-taldeak button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 49px;
-  padding: 9px 11px;
-  border: 2px solid var(--urdina);
-  border-radius: 12px;
-  background-color: var(--beigea);
-  color: var(--urdina);
-  font-size: 18px;
-  cursor: pointer;
 }
 
 .dashboard-taldeak button strong {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  height: 28px;
+  min-width: 27px;
+  height: 27px;
   border-radius: 50%;
-  background-color: var(--urdina);
+  background: var(--urdina);
   color: var(--beigea);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 400;
 }
 
-.programa-atala {
-  margin-bottom: 17px;
-  padding: 16px;
-}
-
-.talde-botoiak button {
-  min-height: 53px;
-  padding: 9px;
-  border: 0;
-  border-radius: 13px;
-  background-color: var(--berdea);
-  color: var(--urdina);
-  font-size: 19px;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0,33,85,.17);
-}
-
+/* TXARTEL OROKORRAK */
 .txartela {
   width: 100%;
-  margin-bottom: 12px;
-  padding: 16px;
+  margin-bottom: 11px;
+  padding: 17px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--zuria);
+  color: var(--urdina);
+  box-shadow: var(--itzala);
+}
+
+.txartela h3 {
+  margin: 0 0 8px;
+  color: var(--urdina);
+  font-size: 24px;
+  font-weight: 400;
 }
 
 .txartela p {
-  margin: 7px 0;
-  color: var(--beigea);
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  font-size: 15px;
+  margin: 6px 0;
+  color: var(--testu-grisa);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
   line-height: 1.5;
 }
 
 .txartela small {
   display: block;
-  margin-top: 9px;
-  color: var(--beigea);
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  font-size: 12px;
-  opacity: .9;
+  margin-top: 8px;
+  color: var(--testu-grisa);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 11px;
+  opacity: .85;
 }
 
 .abisu-txartela {
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  border-left: 5px solid var(--arrosa);
 }
 
 .abisu-ikonoa {
@@ -427,133 +509,164 @@ main {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
-  background-color: var(--urdina);
-  color: var(--beigea);
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+  background: rgba(194,25,108,.10);
+  color: var(--arrosa);
 }
 
-.abisu-ikonoa svg { width: 23px; height: 23px; }
+.abisu-ikonoa svg { width: 21px; height: 21px; }
 
+.alergia-txartela { border-left: 5px solid var(--arrosa); }
+
+/* AUKERA NAGUSIAK */
 .aukera-sarea {
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .aukera-sarea button {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 11px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 12px;
   min-height: 145px;
-  padding: 15px;
-  border: 3px solid var(--urdina);
-  border-radius: 19px;
-  background-color: var(--berdea);
-  color: var(--beigea);
-  font-size: 22px;
+  padding: 18px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--zuria);
+  color: var(--urdina);
+  text-align: left;
+  font-size: 24px;
   line-height: 1;
   cursor: pointer;
+  box-shadow: var(--itzala);
 }
+
+.aukera-sarea button:nth-child(3n+1) { border-top: 7px solid var(--urdina); }
+.aukera-sarea button:nth-child(3n+2) { border-top: 7px solid var(--berdea); }
+.aukera-sarea button:nth-child(3n+3) { border-top: 7px solid var(--arrosa); }
 
 .aukera-sarea svg {
-  width: 45px;
-  height: 45px;
-  stroke: var(--urdina);
+  width: 38px;
+  height: 38px;
+  stroke: var(--berdea);
 }
 
+/* PARTAIDEAK */
 #bilatzailea {
   width: 100%;
   margin-bottom: 15px;
   padding: 14px 16px;
-  border: 3px solid var(--urdina);
-  border-radius: 15px;
-  background-color: var(--beigea);
+  border: 2px solid var(--urdina);
+  border-radius: 7px;
+  background: var(--zuria);
   color: var(--urdina);
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   font-size: 16px;
   outline: none;
 }
 
-.partaide-txartela { border-left-width: 8px; }
+#bilatzailea:focus {
+  box-shadow: 0 0 0 3px rgba(112,159,29,.20);
+}
+
+.partaide-txartela {
+  border-left: 5px solid var(--berdea);
+}
 
 .partaide-goiburua {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
 
 .partaide-avatarra {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
-  border: 3px solid var(--beigea);
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background-color: var(--urdina);
+  background: var(--urdina);
   color: var(--beigea);
-  font-size: 25px;
+  font-size: 24px;
 }
 
 .partaide-goiburua h3 { margin: 0; }
 
 .partaide-datuak {
   display: grid;
-  gap: 9px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .partaide-datuak div {
   display: flex;
   flex-direction: column;
   padding: 10px 12px;
-  border-radius: 12px;
-  background-color: rgba(248,242,202,.17);
+  border-radius: 5px;
+  background: rgba(248,242,202,.65);
 }
 
 .partaide-datuak strong {
   color: var(--urdina);
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  font-size: 12px;
+  font-size: 10px;
   text-transform: uppercase;
 }
 
 .partaide-datuak span,
 .partaide-datuak a {
   margin-top: 3px;
-  color: var(--beigea);
+  color: var(--urdina);
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   text-decoration: none;
 }
 
+/* DOKUMENTUAK ETA IRUDIAK */
 .dokumentu-txartela a,
 .esteka-botoia {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: var(--beigea);
+  color: var(--urdina);
   text-decoration: none;
 }
 
 .dokumentu-txartela a { font-size: 22px; }
-.dokumentu-txartela svg { width: 28px; height: 28px; stroke: var(--urdina); }
+
+.dokumentu-txartela svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--arrosa);
+}
+
+.esteka-botoia {
+  justify-content: center;
+  padding: 13px 16px;
+  border-radius: 5px;
+  background: var(--urdina);
+  color: var(--beigea);
+  font-size: 18px;
+}
 
 .irudiHandia {
   display: block;
   width: 100%;
   height: auto;
-  border: 4px solid var(--urdina);
-  border-radius: 19px;
-  background-color: var(--beigea);
-  box-shadow: 0 6px 16px rgba(0,33,85,.13);
+  border: 0;
+  border-radius: 7px;
+  background: var(--zuria);
+  box-shadow: var(--itzala);
 }
 
+/* BEHEKO MENUA */
 .beheko-menua {
   position: fixed;
   right: 0;
@@ -562,11 +675,11 @@ main {
   z-index: 1000;
   display: grid;
   grid-template-columns: repeat(5,minmax(0,1fr));
-  min-height: 72px;
-  padding: 7px 5px calc(5px + env(safe-area-inset-bottom));
-  border-top: 1px solid rgba(248,242,202,.20);
-  background-color: var(--urdina);
-  box-shadow: 0 -4px 14px rgba(0,33,85,.20);
+  min-height: 68px;
+  padding: 5px 4px calc(5px + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(248,242,202,.15);
+  background: var(--urdina);
+  box-shadow: 0 -5px 18px rgba(0,33,85,.16);
 }
 
 .beheko-menua button {
@@ -579,439 +692,67 @@ main {
   border: 0;
   background: transparent;
   color: var(--beigea);
-  font-size: 13px;
+  font-size: 11px;
   cursor: pointer;
-  opacity: .65;
+  opacity: .60;
 }
 
-.beheko-menua button.nav-aktiboa { opacity: 1; }
+.beheko-menua button.nav-aktiboa {
+  opacity: 1;
+  color: var(--berdea);
+}
 
 .beheko-menua button.nav-aktiboa::before {
   position: absolute;
-  top: -7px;
-  width: 34px;
+  top: -5px;
+  width: 30px;
   height: 3px;
   border-radius: 999px;
-  background-color: var(--berdea);
+  background: var(--berdea);
   content: "";
-}
-
-.beheko-menua svg {
-  width: 27px;
-  height: 27px;
-  margin-bottom: 3px;
-  stroke: var(--beigea);
-}
-
-.beheko-menua span {
-  overflow: hidden;
-  width: 100%;
-  color: var(--beigea);
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@media (max-width: 430px) {
-  .estatistika-sarea { gap: 6px; }
-  .estatistika-txartela { padding: 11px 2px; }
-  .estatistika-txartela strong { font-size: 24px; }
-  .estatistika-txartela span { font-size: 10px; }
-  .dashboard-taldeak, .talde-botoiak { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  .aukera-sarea button { min-height: 125px; font-size: 19px; }
-  .beheko-menua button { font-size: 11px; }
-}
-
-@media (max-width: 350px) {
-  main { padding-left: 9px; padding-right: 9px; }
-  .header-logoa { width: 60px; height: 60px; }
-  header h1 { font-size: 25px; }
-  .estatistika-sarea { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  .aukera-sarea { grid-template-columns: 1fr; }
-}
-
-
-/* =========================================
-   2.1 DISEINU FINDUA
-========================================= */
-
-/* Header trinkoagoa */
-header {
-  padding:
-    calc(12px + env(safe-area-inset-top))
-    16px
-    12px;
-}
-
-.header-logoa {
-  width: 58px;
-  height: 58px;
-  border-radius: 15px;
-}
-
-.header-marka {
-  font-size: 15px;
-}
-
-header h1 {
-  font-size: clamp(24px, 6vw, 32px);
-}
-
-.header-azpititulua {
-  margin-top: 4px;
-  font-size: 14px;
-}
-
-/* Eduki gehiago lehen pantailan */
-main {
-  padding-top: 14px;
-}
-
-/* Ongietorri txartel trinkoagoa */
-.ongietorri-txartela {
-  margin-bottom: 10px;
-  padding: 14px;
-  border-radius: 17px;
-}
-
-.ongietorri-testua {
-  font-size: 20px;
-}
-
-.ongietorri-txartela h2 {
-  font-size: 27px;
-}
-
-.ongietorri-txartela img {
-  width: 58px;
-  height: 58px;
-  border-radius: 15px;
-}
-
-/* Estatistika txartel trinkoagoak */
-.estatistika-sarea {
-  gap: 7px;
-  margin-bottom: 20px;
-}
-
-.estatistika-txartela {
-  padding: 10px 3px;
-  border-radius: 14px;
-}
-
-.estatistika-txartela svg {
-  width: 22px;
-  height: 22px;
-}
-
-.estatistika-txartela strong {
-  font-size: 23px;
-}
-
-.estatistika-txartela span {
-  font-size: 10px;
-}
-
-/* Programa bloke trinkoagoak */
-.dashboard-programa {
-  margin-bottom: 9px;
-  padding: 12px;
-  border-radius: 16px;
-}
-
-.dashboard-programa h3 {
-  margin-bottom: 8px;
-  font-size: 22px;
-}
-
-.dashboard-taldeak {
-  gap: 6px;
-}
-
-.dashboard-taldeak button {
-  min-height: 42px;
-  padding: 7px 9px;
-  font-size: 16px;
-}
-
-.dashboard-taldeak button strong {
-  min-width: 24px;
-  height: 24px;
-  font-size: 13px;
-}
-
-/* Atal izenburuak trinkoagoak */
-.atal-izenburua {
-  margin: 22px 0 10px;
-}
-
-.atal-izenburua h2 {
-  font-size: 25px;
-}
-
-/* Txartel leunagoak */
-.txartela {
-  margin-bottom: 10px;
-  padding: 14px;
-  border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0, 33, 85, 0.10);
-}
-
-/* Beheko menu finduagoa */
-.beheko-menua {
-  min-height: 68px;
-  padding-top: 5px;
-}
-
-.beheko-menua button {
-  font-size: 11px;
 }
 
 .beheko-menua svg {
   width: 24px;
   height: 24px;
+  margin-bottom: 3px;
 }
 
-.beheko-menua button.nav-aktiboa::before {
-  top: -5px;
-  width: 30px;
+.beheko-menua span {
+  overflow: hidden;
+  width: 100%;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Ordenagailuan hover efektu leuna */
-@media (hover: hover) {
+@media (hover:hover) {
+  .web-atal-botoia:hover,
   .dashboard-taldeak button:hover,
   .talde-botoiak button:hover,
   .aukera-sarea button:hover,
   .atal-izenburua button:hover,
   .atzera-botoia:hover {
-    transform: translateY(-1px);
-    filter: brightness(1.03);
+    transform: translateY(-2px);
   }
-}
-
-/* Mugikor txikietan ere 4 estatistika txartel lerro berean */
-@media (max-width: 430px) {
-  .estatistika-sarea {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .estatistika-txartela {
-    min-height: 78px;
-  }
-
-  .ongietorri-txartela h2 {
-    font-size: 24px;
-  }
-}
-
-
-/* =========================================
-   DASHBOARD 2.2 — ZURE BENETAKO PROIEKTUAN
-========================================= */
-
-.dashboard-goiburua {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 12px;
-  padding: 16px;
-  border: 3px solid var(--urdina);
-  border-radius: 20px;
-  background-color: var(--beigea);
-  box-shadow: 0 5px 14px rgba(0, 33, 85, 0.11);
-}
-
-.dashboard-kaixo {
-  margin: 0;
-  color: var(--arrosa);
-  font-size: 23px;
-}
-
-.dashboard-goiburua h2 {
-  margin: 1px 0 0;
-  color: var(--urdina);
-  font-size: 31px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.dashboard-data {
-  margin: 8px 0 0;
-  color: var(--urdina);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 13px;
-}
-
-.dashboard-goiburua img {
-  width: 64px;
-  height: 64px;
-  border: 3px solid var(--urdina);
-  border-radius: 17px;
-  object-fit: cover;
-}
-
-.estatistika-partaideak { background-color: var(--urdina); }
-.estatistika-abisuak { background-color: var(--arrosa); }
-.estatistika-alerta { background-color: var(--berdea); }
-.estatistika-egutegia { background-color: var(--beigea); }
-
-.estatistika-partaideak strong,
-.estatistika-partaideak span,
-.estatistika-abisuak strong,
-.estatistika-abisuak span {
-  color: var(--beigea);
-}
-
-.estatistika-egutegia strong,
-.estatistika-egutegia span {
-  color: var(--urdina);
-}
-
-.gaurko-jarduerak {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 22px;
-  padding: 15px;
-  border-radius: 18px;
-  background-color: var(--urdina);
-  color: var(--beigea);
-  box-shadow: 0 5px 14px rgba(0, 33, 85, 0.18);
-}
-
-.gaurko-jarduerak h3 {
-  margin: 0;
-  color: var(--beigea);
-  font-size: 23px;
-  font-weight: 400;
-}
-
-.gaurko-jarduerak p {
-  margin: 4px 0 0;
-  color: var(--beigea);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 12px;
-  line-height: 1.35;
-  opacity: .88;
-}
-
-.gaurko-jarduerak button {
-  padding: 9px 12px;
-  border: 0;
-  border-radius: 11px;
-  background-color: var(--berdea);
-  color: var(--urdina);
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.programa-zerrenda {
-  display: grid;
-  gap: 10px;
-}
-
-.programa-lerroa {
-  padding: 13px;
-  border: 3px solid var(--urdina);
-  border-radius: 18px;
-  background-color: var(--berdea);
-  box-shadow: 0 4px 11px rgba(0, 33, 85, 0.10);
-}
-
-.programa-izenburua {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 9px;
-  color: var(--beigea);
-}
-
-.programa-izenburua span {
-  font-size: 24px;
-}
-
-.programa-izenburua strong {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 34px;
-  height: 28px;
-  padding: 0 8px;
-  border-radius: 999px;
-  background-color: var(--urdina);
-  color: var(--beigea);
-  font-size: 15px;
-  font-weight: 400;
-}
-
-.programa-taldeak-trinkoa {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 7px;
-}
-
-.programa-taldeak-trinkoa button {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 40px;
-  padding: 7px 9px;
-  border: 2px solid var(--urdina);
-  border-radius: 11px;
-  background-color: var(--beigea);
-  color: var(--urdina);
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.programa-taldeak-trinkoa button strong {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 23px;
-  height: 23px;
-  border-radius: 50%;
-  background-color: var(--urdina);
-  color: var(--beigea);
-  font-size: 12px;
-  font-weight: 400;
-}
-
-.beheko-menua button.nav-aktiboa {
-  opacity: 1;
-}
-
-.beheko-menua button.nav-aktiboa svg {
-  stroke: var(--berdea);
-  transform: translateY(-1px) scale(1.08);
-}
-
-.beheko-menua button.nav-aktiboa span {
-  color: var(--berdea);
 }
 
 @media (max-width: 430px) {
-  .programa-taldeak-trinkoa {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .dashboard-goiburua h2 {
-    font-size: 27px;
-  }
-
-  .gaurko-jarduerak {
-    grid-template-columns: 1fr;
-  }
-
-  .gaurko-jarduerak button {
-    width: 100%;
-  }
+  main { padding-left: 13px; padding-right: 13px; }
+  .ongietorri-txartela { padding: 19px 16px; }
+  .ongietorri-txartela img { width: 62px; height: 62px; }
+  .web-atal-botoia { min-height: 106px; padding: 14px; }
+  .web-atal-botoia span { font-size: 22px; }
+  .estatistika-sarea { gap: 6px; }
+  .estatistika-txartela strong { font-size: 22px; }
+  .dashboard-taldeak, .talde-botoiak { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .aukera-sarea button { min-height: 125px; font-size: 21px; }
 }
 
 @media (max-width: 350px) {
-  .programa-taldeak-trinkoa {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .web-atalak,
+  .aukera-sarea { grid-template-columns: 1fr; }
+  .estatistika-sarea { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .header-logoa { width: 48px; height: 48px; }
+  header h1 { font-size: 24px; }
 }

@@ -143,9 +143,7 @@ async function hasieraIkusi() {
       const izena = garbitu(gelaxka(row, 2));
       const alergiak = garbitu(gelaxka(row, 5));
 
-      if (!izena || goiburuaDa(izena, "Izena")) {
-        return;
-      }
+      if (!izena || goiburuaDa(izena, "Izena")) return;
 
       partaideGuztira++;
 
@@ -154,26 +152,16 @@ async function hasieraIkusi() {
       }
 
       if (alergiaErrealaDa(alergiak)) {
-        alergiakDituztenak.push({
-          taldea,
-          izena,
-          alergiak
-        });
+        alergiakDituztenak.push({ taldea, izena, alergiak });
       }
     });
 
     const abisuZerrenda = (abisuak.table?.rows || []).filter(row => {
       const izenburua = garbitu(gelaxka(row, 1));
-
-      return (
-        izenburua &&
-        !goiburuaDa(izenburua, "Izenburua")
-      );
+      return izenburua && !goiburuaDa(izenburua, "Izenburua");
     });
 
-    const azkenAbisuak = abisuZerrenda
-      .slice(-3)
-      .reverse();
+    const azkenAbisuak = abisuZerrenda.slice(-3).reverse();
 
     const gaur = new Date().toLocaleDateString("eu-ES", {
       weekday: "long",
@@ -185,51 +173,49 @@ async function hasieraIkusi() {
     let html = `
       <section class="ongietorri-txartela">
         <div>
-          <p class="ongietorri-testua">Kaixo!</p>
-          <h2>Mutrikuko Eskola Kirola</h2>
+          <p class="ongietorri-testua">2026–2027 IKASTURTEA</p>
+          <h2>Mutrikuko<br>Eskola Kirola</h2>
           <p class="gaurko-data">${babestu(gaur)}</p>
         </div>
+        <img src="images/icon.192.png" alt="MEKE logoa">
+      </section>
 
-        <img
-          src="images/icon.192.png"
-          alt="MEKE logoa"
-        >
+      <section class="web-atalak">
+        <button class="web-atal-botoia" onclick="erakutsiAtala('egutegiak')">
+          <span>IKASTURTEKO EGUTEGIA</span>
+          <small>Ikasturteko eta begiraleen egutegiak</small>
+          <svg viewBox="0 0 24 24"><path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/></svg>
+        </button>
+
+        <button class="web-atal-botoia" onclick="ordutegiaIkusi()">
+          <span>ORDUTEGIA</span>
+          <small>Ikasturteko ordutegi orokorra</small>
+          <svg viewBox="0 0 24 24"><path d="M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        </button>
+
+        <button class="web-atal-botoia" onclick="protokoloakIkusi()">
+          <span>PROTOKOLOA</span>
+          <small>Lan eta jarduera protokoloak</small>
+          <svg viewBox="0 0 24 24"><path d="M9 5h6m-8 2H5v14h14V7h-2M9 3h6v4H9V3Zm0 9h6m-6 4h6"/></svg>
+        </button>
+
+        <button class="web-atal-botoia" onclick="kokalekuakIkusi()">
+          <span>INSTALAZIOAK</span>
+          <small>Kokalekuak eta instalazioen informazioa</small>
+          <svg viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Zm0-9a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/></svg>
+        </button>
       </section>
 
       <section class="estatistika-sarea">
-        ${estatistikaTxartela(
-          "partaideak",
-          partaideGuztira,
-          "Partaide"
-        )}
-
-        ${estatistikaTxartela(
-          "abisuak",
-          abisuZerrenda.length,
-          "Abisu",
-          "erakutsiAtala('abisuak')"
-        )}
-
-        ${estatistikaTxartela(
-          "alerta",
-          alergiakDituztenak.length,
-          "Alergia"
-        )}
-
-        ${estatistikaTxartela(
-          "egutegia",
-          2,
-          "Egutegi",
-          "erakutsiAtala('egutegiak')"
-        )}
+        ${estatistikaTxartela("partaideak", partaideGuztira, "Partaide")}
+        ${estatistikaTxartela("abisuak", abisuZerrenda.length, "Abisu", "erakutsiAtala('abisuak')")}
+        ${estatistikaTxartela("alerta", alergiakDituztenak.length, "Alergia")}
+        ${estatistikaTxartela("egutegia", 2, "Egutegi", "erakutsiAtala('egutegiak')")}
       </section>
 
       <div class="atal-izenburua">
         <h2>Programak eta taldeak</h2>
-
-        <button onclick="erakutsiAtala('taldeak')">
-          Ikusi guztiak
-        </button>
+        <button onclick="erakutsiAtala('taldeak')">Ikusi guztiak</button>
       </div>
     `;
 
@@ -237,7 +223,6 @@ async function hasieraIkusi() {
       html += `
         <section class="dashboard-programa">
           <h3>${babestu(programa)}</h3>
-
           <div class="dashboard-taldeak">
             ${taldeak.map(taldea => `
               <button onclick="partaideakIkusi('${taldea}')">
@@ -253,19 +238,12 @@ async function hasieraIkusi() {
     html += `
       <div class="atal-izenburua">
         <h2>Azken abisuak</h2>
-
-        <button onclick="erakutsiAtala('abisuak')">
-          Ikusi guztiak
-        </button>
+        <button onclick="erakutsiAtala('abisuak')">Ikusi guztiak</button>
       </div>
     `;
 
     if (azkenAbisuak.length === 0) {
-      html += `
-        <article class="txartela">
-          <p>Ez dago abisurik.</p>
-        </article>
-      `;
+      html += `<article class="txartela"><p>Ez dago abisurik.</p></article>`;
     }
 
     azkenAbisuak.forEach(row => {
@@ -284,27 +262,17 @@ async function hasieraIkusi() {
     `;
 
     if (alergiakDituztenak.length === 0) {
-      html += `
-        <article class="txartela">
-          <p>Ez dago alergiarik erregistratuta.</p>
-        </article>
-      `;
+      html += `<article class="txartela"><p>Ez dago alergiarik erregistratuta.</p></article>`;
     }
 
-    alergiakDituztenak
-      .slice(0, 5)
-      .forEach(partaidea => {
-        html += `
-          <article class="txartela alergia-txartela">
-            <h3>${babestu(partaidea.izena)}</h3>
-
-            <p>
-              <strong>${babestu(partaidea.taldea)}</strong>
-              · ${babestu(partaidea.alergiak)}
-            </p>
-          </article>
-        `;
-      });
+    alergiakDituztenak.slice(0, 5).forEach(partaidea => {
+      html += `
+        <article class="txartela alergia-txartela">
+          <h3>${babestu(partaidea.izena)}</h3>
+          <p><strong>${babestu(partaidea.taldea)}</strong> · ${babestu(partaidea.alergiak)}</p>
+        </article>
+      `;
+    });
 
     const erroreak = emaitzak
       .filter(emaitza => emaitza.status === "rejected")
@@ -314,24 +282,16 @@ async function hasieraIkusi() {
     if (erroreak.length > 0) {
       html += `
         <article class="txartela">
-          <p>
-            Datu-fitxaren bat ezin izan da kargatu,
-            baina aplikazioa ireki da.
-          </p>
-
+          <p>Datu-fitxaren bat ezin izan da kargatu, baina aplikazioa ireki da.</p>
           <small>${babestu(erroreak.join(" · "))}</small>
         </article>
       `;
     }
 
     edukia.innerHTML = html;
-
   } catch (error) {
     edukia.innerHTML = `
-      <div class="orrialde-goiburua">
-        <h2>Hasiera</h2>
-      </div>
-
+      <div class="orrialde-goiburua"><h2>Hasiera</h2></div>
       <article class="txartela">
         <p>Ezin izan da hasiera kargatu.</p>
         <small>${babestu(error?.message || "Errore ezezaguna")}</small>
@@ -620,7 +580,7 @@ function gehiagoIkusi() {
 
     <section class="aukera-sarea">
       ${aukeraBotoia("ordutegiaIkusi()", "Ordutegia", "egutegia")}
-      ${aukeraBotoia("kokalekuakIkusi()", "Kokalekuak", "kokalekua")}
+      ${aukeraBotoia("kokalekuakIkusi()", "Instalazioak", "kokalekua")}
       ${aukeraBotoia("erakutsiAtala('abisuak')", "Abisuak", "abisuak")}
       ${aukeraBotoia("erakutsiAtala('agiriak')", "Agiriak", "dokumentua")}
     </section>
