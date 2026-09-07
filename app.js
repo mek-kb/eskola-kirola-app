@@ -606,7 +606,24 @@ function aukeraBotoia(ekintza, testua, mota) {
 }
 
 async function ordutegiaIkusi() {
-  await irudiAtalaIkusi("Ordutegia", "Ordutegia");
+  document.getElementById("edukia").innerHTML = `
+    <button class="atzera-botoia" onclick="erakutsiAtala('gehiago')">← Gehiago</button>
+    <div class="orrialde-goiburua"><h2>Ordutegia</h2></div>
+
+    <article class="txartela">
+      <h3>Eskola Kirola</h3>
+      <a href="images/eskola-kirola-ordutegia.png" target="_blank" rel="noopener">
+        <img src="images/eskola-kirola-ordutegia.png" class="irudiHandia" alt="Eskola Kirola 2026-2027 ordutegia">
+      </a>
+    </article>
+
+    <article class="txartela">
+      <h3>Psikomotrizitatea</h3>
+      <a href="images/psikomotrizitatea-ordutegia.png" target="_blank" rel="noopener">
+        <img src="images/psikomotrizitatea-ordutegia.png" class="irudiHandia" alt="Psikomotrizitatea 2026-2027 ordutegia">
+      </a>
+    </article>
+  `;
 }
 
 async function kokalekuakIkusi() {
