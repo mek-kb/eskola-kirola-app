@@ -7,7 +7,7 @@ const TALDEAK = {
 };
 
 // Hemen gehituko ditugu Google Calendar estekak.
-const IKASTURTEKO_EGUTEGIA_URL = "";
+const IKASTURTEKO_EGUTEGIA_IRUDIA = "images/ikasturteko-egutegia.png";
 const BEGIRALEEN_EGUTEGIA_URL = "";
 
 function erakutsiAtala(atala) {
@@ -494,7 +494,16 @@ function egutegiakIkusi() {
 }
 
 function ikasturtekoEgutegiaIkusi() {
-  egutegiEstekaIkusi("Ikasturteko egutegia", IKASTURTEKO_EGUTEGIA_URL);
+  document.getElementById("edukia").innerHTML = `
+    <button class="atzera-botoia" onclick="erakutsiAtala('egutegiak')">← Egutegiak</button>
+    <div class="orrialde-goiburua">
+      <h2>Ikasturteko egutegia</h2>
+      <p>2026–2027 ikasturtea</p>
+    </div>
+    <article class="txartela irudi-txartela">
+      <img src="${IKASTURTEKO_EGUTEGIA_IRUDIA}" alt="2026-2027 ikasturteko egutegia" loading="eager">
+    </article>
+  `;
 }
 
 function begiraleenEgutegiaIkusi() {
