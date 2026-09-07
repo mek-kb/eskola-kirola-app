@@ -657,8 +657,64 @@ async function ordutegiaIkusi() {
   `;
 }
 
+function instalazioCalendarTxartela(izena, calendarId) {
+  const src = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(calendarId)}&ctz=Europe%2FMadrid&mode=AGENDA`;
+  return `
+    <article class="txartela" style="padding:0; overflow:hidden; margin-bottom:16px;">
+      <div style="padding:14px 16px 10px;"><h3 style="margin:0;">${babestu(izena)}</h3></div>
+      <iframe
+        src="${src}"
+        title="${babestu(izena)}"
+        style="width:100%; height:60vh; min-height:480px; border:0; display:block; background:#fff;"
+        frameborder="0"
+        scrolling="no">
+      </iframe>
+    </article>
+  `;
+}
+
 async function kokalekuakIkusi() {
-  await irudiAtalaIkusi("Kokalekuak", "Kokalekuak");
+  document.getElementById("edukia").innerHTML = `
+    <button class="atzera-botoia" onclick="erakutsiAtala('gehiago')">← Gehiago</button>
+    <div class="orrialde-goiburua">
+      <h2>Instalazioak</h2>
+      <p>Talde bakoitzaren instalazioen egutegiak eta psikomotrizitateko txandak.</p>
+    </div>
+
+    <section style="margin-bottom:28px;">
+      <h2 style="margin:0 0 12px;">LH1 · LH2 · LH3 · LH4</h2>
+      ${instalazioCalendarTxartela("Talde berdea", "b28451ff946a9b6333f1cc054eb8d263feec1b96c8440ca9ce4414e669d854c2@group.calendar.google.com")}
+      ${instalazioCalendarTxartela("Talde laranja", "c34a07e7f122238624391124241a4808282ada68834081a193f9dc26ab7c9973@group.calendar.google.com")}
+    </section>
+
+    <section style="margin-bottom:28px;">
+      <h2 style="margin:0 0 12px;">LH5</h2>
+      ${instalazioCalendarTxartela("Talde arrosa", "160dc75ac739d6e5355f3e19e19e58ce0908538750b43ce8fd4654e41a0d7c08@group.calendar.google.com")}
+      ${instalazioCalendarTxartela("Talde horia", "e7ab91b58c9831564d3376108b910dea500445f0af259fe40dd0974fde95e421@group.calendar.google.com")}
+      ${instalazioCalendarTxartela("Talde morea", "a2f0cbcc2d270daf898d9e7d090ef99e537a90b9ec774a1c317860b3c48dd2c7@group.calendar.google.com")}
+    </section>
+
+    <section style="margin-bottom:28px;">
+      <h2 style="margin:0 0 12px;">LH6</h2>
+      ${instalazioCalendarTxartela("LH6 instalazioak", "41f5c31499b3ad6d31646515b6c4c4f56a589c93bf1d9b3a0e200a033584bfc5@group.calendar.google.com")}
+    </section>
+
+    <section>
+      <h2 style="margin:0 0 12px;">Psikomotrizitatea</h2>
+      <article class="txartela">
+        <h3>HH3 txandak</h3>
+        <a href="images/hh3-txandak.png" target="_blank" rel="noopener">
+          <img src="images/hh3-txandak.png" class="irudiHandia" alt="HH3 egutegi txandak">
+        </a>
+      </article>
+      <article class="txartela">
+        <h3>HH5 txandak</h3>
+        <a href="images/hh5-txandak.png" target="_blank" rel="noopener">
+          <img src="images/hh5-txandak.png" class="irudiHandia" alt="HH5 egutegi txandak">
+        </a>
+      </article>
+    </section>
+  `;
 }
 
 async function irudiAtalaIkusi(sheetIzena, izenburua) {
