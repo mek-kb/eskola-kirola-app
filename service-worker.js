@@ -1,17 +1,21 @@
-const CACHE_NAME = "eskola-kirola-app-fix-v1";
+const CACHE_NAME = "eskola-kirola-app-diseinu-berria-v2";
 
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
-  "./manifest.json"
+  "./manifest.json",
+  "./images/icon.192.png",
+  "./images/icon.512.png"
 ];
 
 self.addEventListener("install", event => {
   self.skipWaiting();
+
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(FILES_TO_CACHE))
   );
 });
 
@@ -19,7 +23,12 @@ self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys()
       .then(names => Promise.all(
-        names.map(name => name !== CACHE_NAME ? caches.delete(name) : null)
+        names.map(name => {
+          if (name !== CACHE_NAME) {
+            return caches.delete(name);
+          }
+          return null;
+        })
       ))
       .then(() => self.clients.claim())
   );
@@ -36,13 +45,36 @@ self.addEventListener("fetch", event => {
     return;
   }
 
+  // HTML/CSS/JS: lehenengo saretik saiatu, diseinu berria berehala hartzeko.
+  if (
+    url.pathname.endsWith("/") ||
+    url.pathname.endsWith("/index.html") ||
+    url.pathname.endsWith("/style.css") ||
+    url.pathname.endsWith("/app.js")
+  ) {
+    event.respondWith(
+      fetch(event.request, { cache: "no-store" })
+        .then(response => {
+          const kopia = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, kopia));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Gainerako fitxategiak: cache erabilgarria offline modurako.
   event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        const kopia = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, kopia));
-        return response;
+    caches.match(event.request)
+      .then(cached => {
+        if (cached) return cached;
+
+        return fetch(event.request).then(response => {
+          const kopia = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, kopia));
+          return response;
+        });
       })
-      .catch(() => caches.match(event.request))
   );
 });
