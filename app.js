@@ -8,7 +8,7 @@ const TALDEAK = {
 
 // Hemen gehituko ditugu Google Calendar estekak.
 const IKASTURTEKO_EGUTEGIA_IRUDIA = "images/ikasturteko-egutegia.png";
-const BEGIRALEEN_EGUTEGIA_URL = "";
+const BEGIRALEEN_EGUTEGIA_URL = "https://calendar.google.com/calendar/u/0?cid=bXV0cmlrdWtvZXNrb2xha2lyb2xhQGdtYWlsLmNvbQ";
 
 function erakutsiAtala(atala) {
   navAktiboaEzarri(atala);
@@ -507,7 +507,29 @@ function ikasturtekoEgutegiaIkusi() {
 }
 
 function begiraleenEgutegiaIkusi() {
-  egutegiEstekaIkusi("Begiraleen egutegia", BEGIRALEEN_EGUTEGIA_URL);
+  const embedUrl = "https://calendar.google.com/calendar/embed?src=mutrikukoeskolakirola%40gmail.com&ctz=Europe%2FMadrid&mode=AGENDA";
+
+  document.getElementById("edukia").innerHTML = `
+    <button class="atzera-botoia" onclick="erakutsiAtala('egutegiak')">← Egutegiak</button>
+    <div class="orrialde-goiburua">
+      <h2>Begiraleen egutegia</h2>
+      <p>Google Calendar · eguneratuta</p>
+    </div>
+
+    <article class="txartela" style="padding:0; overflow:hidden;">
+      <iframe
+        src="${embedUrl}"
+        title="Begiraleen egutegia"
+        style="width:100%; height:72vh; min-height:560px; border:0; display:block; background:#fff;"
+        frameborder="0"
+        scrolling="no">
+      </iframe>
+    </article>
+
+    <p style="margin:12px 4px 0; font-size:0.9rem; opacity:.75;">
+      Egutegia hemen bertan ikusiko duzu. Google Calendar-en egiten dituzun aldaketak automatikoki agertuko dira.
+    </p>
+  `;
 }
 
 function egutegiEstekaIkusi(izenburua, url) {
