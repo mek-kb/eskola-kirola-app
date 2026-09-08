@@ -382,8 +382,7 @@ async function partaideakIkusi(taldea) {
       const tutorea = garbitu(gelaxka(row, 3));
       const telefonoa = garbitu(gelaxka(row, 4));
       const alergiak = garbitu(gelaxka(row, 5));
-      const beldurrak = garbitu(gelaxka(row, 6));
-      const baimenak = garbitu(gelaxka(row, 7));
+      const kodea = garbitu(gelaxka(row, 6));
 
       if (taldeaSheet !== taldea || !izena || goiburuaDa(izena, "Izena")) return;
       kopurua++;
@@ -404,8 +403,7 @@ async function partaideakIkusi(taldea) {
             ${datuLerroa("Tutorea", tutorea || "—")}
             ${datuLerroa("Telefonoa", telefonoa || "—", telefonoa ? `tel:${telefonoGarbitua}` : "")}
             ${datuLerroa("Alergiak", alergiak || "—")}
-            ${datuLerroa("Beldurrak", beldurrak || "—")}
-            ${datuLerroa("Baimenak", baimenak || "—")}
+            ${datuLerroa("Kodea", kodea || "—")}
           </div>
 
           <small>ID: ${babestu(id)}</small>
