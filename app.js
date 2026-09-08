@@ -505,7 +505,7 @@ function ikasturtekoEgutegiaIkusi() {
 }
 
 function begiraleenEgutegiaIkusi() {
-  const embedUrl = "https://calendar.google.com/calendar/embed?src=mutrikukoeskolakirola%40gmail.com&ctz=Europe%2FMadrid&mode=AGENDA";
+  const embedUrl = "https://calendar.google.com/calendar/embed?src=mutrikukoeskolakirola%40gmail.com&ctz=Europe%2FMadrid&mode=MONTH";
 
   document.getElementById("edukia").innerHTML = `
     <button class="atzera-botoia" onclick="erakutsiAtala('egutegiak')">← Egutegiak</button>
@@ -656,7 +656,7 @@ async function ordutegiaIkusi() {
 }
 
 function instalazioCalendarTxartela(izena, calendarId) {
-  const src = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(calendarId)}&ctz=Europe%2FMadrid&mode=AGENDA`;
+  const src = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(calendarId)}&ctz=Europe%2FMadrid&mode=MONTH`;
   return `
     <article class="txartela" style="padding:0; overflow:hidden; margin-bottom:16px;">
       <div style="padding:14px 16px 10px;"><h3 style="margin:0;">${babestu(izena)}</h3></div>
