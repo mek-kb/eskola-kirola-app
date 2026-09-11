@@ -161,7 +161,9 @@ function erakutsiAtala(atala) {
     begiraleenEgutegia: begiraleenEgutegiaIkusi,
     dokumentuak: dokumentuakIkusi,
     protokoloak: protokoloakIkusi,
-    lanorduak: lanorduakIkusi
+    lanorduak: lanorduakIkusi,
+    nireTaldeak: nireTaldeakIkusi,
+    taldeGuztiak: taldeGuztiakIkusi
   };
 
   if (ekintzak[atala]) ekintzak[atala]();
@@ -184,7 +186,9 @@ function navAktiboaEzarri(atala) {
     gehiago: "nav-gehiago",
     ordutegia: "nav-gehiago",
     kokalekuak: "nav-gehiago",
-    lanorduak: "nav-gehiago"
+    lanorduak: "nav-gehiago",
+    nireTaldeak: "nav-taldeak",
+    taldeGuztiak: "nav-taldeak"
   };
 
   const botoia = document.getElementById(mapa[atala] || "");
@@ -276,9 +280,9 @@ async function hasieraIkusi() {
     const alergiakDituztenak = [];
 
     (partaideak.table?.rows || []).forEach(row => {
-      const taldea = garbitu(gelaxka(row, 1));
-      const izena = garbitu(gelaxka(row, 2));
-      const alergiak = garbitu(gelaxka(row, 5));
+      const taldea = garbitu(gelaxka(row, 1)); // Maila
+      const izena = garbitu(gelaxka(row, 3));
+      const alergiak = garbitu(gelaxka(row, 6));
 
       if (!izena || goiburuaDa(izena, "Izena")) return;
 
@@ -470,40 +474,232 @@ function abisuTxartela(data, izenburua, mezua, taldea) {
 }
 
 function taldeakIkusi() {
-  const edukia = document.getElementById("edukia");
-
-  let html = `
+  document.getElementById("edukia").innerHTML = `
     <div class="orrialde-goiburua">
       <h2>Taldeak</h2>
-      <p>Aukeratu programa eta taldea.</p>
+      <p>Begirale bakoitzaren taldeak edo talde guztiak ikusi.</p>
     </div>
-  `;
 
-  Object.entries(TALDEAK).forEach(([programa, taldeak]) => {
-    html += `
+    <section class="aukera-sarea">
+      ${aukeraBotoia("erakutsiAtala('nireTaldeak')", "Nire taldeak", "begiraleak")}
+      ${aukeraBotoia("erakutsiAtala('taldeGuztiak')", "Talde guztiak", "partaideak")}
+    </section>
+
+    <div class="atal-izenburua" style="margin-top:22px;">
+      <h2>Mailaka</h2>
+    </div>
+
+    ${Object.entries(TALDEAK).map(([programa, mailak]) => `
       <section class="programa-atala">
         <h3>${babestu(programa)}</h3>
         <div class="talde-botoiak">
-          ${taldeak.map(t => `<button onclick="partaideakIkusi('${t}')">${t}</button>`).join("")}
+          ${mailak.map(maila => `<button onclick="partaideakIkusi('${babestu(maila)}')">${babestu(maila)}</button>`).join("")}
         </div>
       </section>
-    `;
-  });
-
-  edukia.innerHTML = html;
+    `).join("")}
+  `;
 }
 
-async function partaideakIkusi(taldea) {
+function begiraleTaldeEsleipenakIrakurri(json) {
+  const esleipenak = [];
+
+  (json.table?.rows || []).forEach(row => {
+    const begiralea = garbitu(gelaxka(row, 0));
+    const maila = garbitu(gelaxka(row, 1));
+    const taldea = garbitu(gelaxka(row, 2));
+
+    if (!begiralea || goiburuaDa(begiralea, "Begiralea")) return;
+    if (!maila || !taldea) return;
+
+    esleipenak.push({ begiralea, maila, taldea });
+  });
+
+  return esleipenak;
+}
+
+async function nireTaldeakIkusi() {
+  navAktiboaEzarri("taldeak");
+  kargatzenErakutsi();
+
+  try {
+    const json = await sheetKargatu("BegiraleakTaldea");
+    const esleipenak = begiraleTaldeEsleipenakIrakurri(json);
+    const begiraleak = [...new Set(esleipenak.map(e => e.begiralea))]
+      .sort((a, b) => a.localeCompare(b, "eu"));
+
+    document.getElementById("edukia").innerHTML = `
+      <button class="atzera-botoia" onclick="erakutsiAtala('taldeak')">← Taldeak</button>
+      <div class="orrialde-goiburua">
+        <h2>Nire taldeak</h2>
+        <p>Aukeratu begiralea bere taldeak ikusteko.</p>
+      </div>
+
+      <article class="txartela">
+        <label for="nire-taldeak-begiralea" style="display:block;margin-bottom:7px;font-weight:600;">Begiralea</label>
+        <select id="nire-taldeak-begiralea" onchange="nireTaldeakBegiraleaIkusi(this.value)"
+          style="width:100%;padding:12px;border:1px solid #002155;border-radius:10px;background:#fff;font-size:1rem;">
+          <option value="">Aukeratu begiralea</option>
+          ${begiraleak.map(izena => `<option value="${babestu(izena)}">${babestu(izena)}</option>`).join("")}
+        </select>
+      </article>
+
+      <div id="nire-taldeak-zerrenda" style="margin-top:18px;"></div>
+    `;
+  } catch (error) {
+    document.getElementById("edukia").innerHTML = erroreTxartela("Nire taldeak", error);
+  }
+}
+
+async function nireTaldeakBegiraleaIkusi(begiralea) {
+  const edukiontzia = document.getElementById("nire-taldeak-zerrenda");
+  if (!edukiontzia) return;
+
+  if (!begiralea) {
+    edukiontzia.innerHTML = "";
+    return;
+  }
+
+  edukiontzia.innerHTML = `<div class="kargatzen"><span></span><span></span><span></span></div>`;
+
+  try {
+    const [esleipenJson, partaideJson] = await Promise.all([
+      sheetKargatu("BegiraleakTaldea"),
+      sheetKargatu("Partaideak")
+    ]);
+
+    const esleipenak = begiraleTaldeEsleipenakIrakurri(esleipenJson)
+      .filter(e => e.begiralea === begiralea);
+
+    if (!esleipenak.length) {
+      edukiontzia.innerHTML = `<article class="txartela"><p>Ez dago ${babestu(begiralea)} begiraleari esleitutako talderik.</p></article>`;
+      return;
+    }
+
+    const partaideak = partaideJson.table?.rows || [];
+
+    edukiontzia.innerHTML = `
+      <div class="atal-izenburua"><h2>${babestu(begiralea)} · taldeak</h2></div>
+      ${esleipenak.map(e => {
+        const kop = partaideak.filter(row => {
+          const maila = garbitu(gelaxka(row, 1));
+          const taldea = garbitu(gelaxka(row, 2));
+          const izena = garbitu(gelaxka(row, 3));
+          return izena && !goiburuaDa(izena, "Izena") && maila === e.maila && taldea === e.taldea;
+        }).length;
+
+        return taldeEsleipenTxartela(e.maila, e.taldea, [e.begiralea], kop, "nireTaldeak");
+      }).join("")}
+    `;
+  } catch (error) {
+    edukiontzia.innerHTML = `<article class="txartela"><p>Ezin izan dira taldeak kargatu.</p></article>`;
+  }
+}
+
+async function taldeGuztiakIkusi() {
+  navAktiboaEzarri("taldeak");
+  kargatzenErakutsi();
+
+  try {
+    const [esleipenJson, partaideJson] = await Promise.all([
+      sheetKargatu("BegiraleakTaldea"),
+      sheetKargatu("Partaideak")
+    ]);
+
+    const esleipenak = begiraleTaldeEsleipenakIrakurri(esleipenJson);
+    const mapa = new Map();
+
+    esleipenak.forEach(e => {
+      const gakoa = `${e.maila}|||${e.taldea}`;
+      if (!mapa.has(gakoa)) {
+        mapa.set(gakoa, { maila: e.maila, taldea: e.taldea, begiraleak: [] });
+      }
+      const item = mapa.get(gakoa);
+      if (!item.begiraleak.includes(e.begiralea)) item.begiraleak.push(e.begiralea);
+    });
+
+    // Partaideetan dagoen talde bat BegiraleakTaldea fitxan oraindik ez badago ere erakutsi.
+    (partaideJson.table?.rows || []).forEach(row => {
+      const maila = garbitu(gelaxka(row, 1));
+      const taldea = garbitu(gelaxka(row, 2));
+      const izena = garbitu(gelaxka(row, 3));
+      if (!izena || goiburuaDa(izena, "Izena") || !maila || !taldea) return;
+      const gakoa = `${maila}|||${taldea}`;
+      if (!mapa.has(gakoa)) mapa.set(gakoa, { maila, taldea, begiraleak: [] });
+    });
+
+    const ordena = Object.values(TALDEAK).flat();
+    const taldeak = [...mapa.values()].sort((a, b) => {
+      const ai = ordena.indexOf(a.maila);
+      const bi = ordena.indexOf(b.maila);
+      if (ai !== bi) return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
+      return a.taldea.localeCompare(b.taldea, "eu");
+    });
+
+    let html = `
+      <button class="atzera-botoia" onclick="erakutsiAtala('taldeak')">← Taldeak</button>
+      <div class="orrialde-goiburua">
+        <h2>Talde guztiak</h2>
+        <p>Maila, taldea, begiralea eta taldeko partaideak.</p>
+      </div>
+    `;
+
+    if (!taldeak.length) {
+      html += `<article class="txartela"><p>Oraindik ez dago talderik esleituta.</p></article>`;
+    } else {
+      const partaideRows = partaideJson.table?.rows || [];
+      taldeak.forEach(item => {
+        const kop = partaideRows.filter(row => {
+          const maila = garbitu(gelaxka(row, 1));
+          const taldea = garbitu(gelaxka(row, 2));
+          const izena = garbitu(gelaxka(row, 3));
+          return izena && !goiburuaDa(izena, "Izena") && maila === item.maila && taldea === item.taldea;
+        }).length;
+
+        html += taldeEsleipenTxartela(item.maila, item.taldea, item.begiraleak, kop, "taldeGuztiak");
+      });
+    }
+
+    document.getElementById("edukia").innerHTML = html;
+  } catch (error) {
+    document.getElementById("edukia").innerHTML = erroreTxartela("Talde guztiak", error);
+  }
+}
+
+function taldeEsleipenTxartela(maila, taldea, begiraleak, kopurua, atzera) {
+  const begiraleTestua = begiraleak.length ? begiraleak.join(", ") : "Begiralerik esleitu gabe";
+  return `
+    <article class="txartela" style="margin-bottom:14px;">
+      <button onclick="partaideakIkusi('${babestu(maila)}','${babestu(taldea)}','${babestu(atzera)}')"
+        style="width:100%;border:0;background:transparent;text-align:left;padding:0;color:inherit;font:inherit;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+          <div>
+            <h3 style="margin:0 0 5px;">${babestu(maila)} · ${babestu(taldea)}</h3>
+            <p style="margin:0;opacity:.8;"><strong>Begiralea:</strong> ${babestu(begiraleTestua)}</p>
+          </div>
+          <strong style="font-size:1.2rem;white-space:nowrap;">${kopurua}</strong>
+        </div>
+      </button>
+    </article>
+  `;
+}
+
+async function partaideakIkusi(maila, taldea = "", atzera = "taldeak") {
   navAktiboaEzarri("taldeak");
   kargatzenErakutsi();
 
   try {
     const json = await sheetKargatu("Partaideak");
+    const izenburua = taldea ? `${maila} · ${taldea}` : maila;
+    const atzeraEkintza = atzera === "nireTaldeak"
+      ? "erakutsiAtala('nireTaldeak')"
+      : atzera === "taldeGuztiak"
+        ? "erakutsiAtala('taldeGuztiak')"
+        : "erakutsiAtala('taldeak')";
 
     let html = `
-      <button class="atzera-botoia" onclick="erakutsiAtala('taldeak')">← Taldeak</button>
+      <button class="atzera-botoia" onclick="${atzeraEkintza}">← Taldeak</button>
       <div class="orrialde-goiburua">
-        <h2>${babestu(taldea)}</h2>
+        <h2>${babestu(izenburua)}</h2>
         <p>Taldeko partaideen informazioa.</p>
       </div>
       <input type="search" id="bilatzailea" placeholder="Bilatu partaidea..." oninput="bilatuPartaideak()" autocomplete="off">
@@ -512,19 +708,21 @@ async function partaideakIkusi(taldea) {
 
     let kopurua = 0;
 
-    json.table.rows.forEach(row => {
+    (json.table?.rows || []).forEach(row => {
       const id = garbitu(gelaxka(row, 0));
-      const taldeaSheet = garbitu(gelaxka(row, 1));
-      const izena = garbitu(gelaxka(row, 2));
-      const tutorea = garbitu(gelaxka(row, 3));
-      const telefonoa = garbitu(gelaxka(row, 4));
-      const alergiak = garbitu(gelaxka(row, 5));
-      const kodea = garbitu(gelaxka(row, 6));
+      const mailaSheet = garbitu(gelaxka(row, 1));
+      const taldeaSheet = garbitu(gelaxka(row, 2));
+      const izena = garbitu(gelaxka(row, 3));
+      const tutorea = garbitu(gelaxka(row, 4));
+      const telefonoa = garbitu(gelaxka(row, 5));
+      const alergiak = garbitu(gelaxka(row, 6));
+      const kodea = garbitu(gelaxka(row, 7));
 
-      if (taldeaSheet !== taldea || !izena || goiburuaDa(izena, "Izena")) return;
+      if (mailaSheet !== maila || (taldea && taldeaSheet !== taldea) || !izena || goiburuaDa(izena, "Izena")) return;
       kopurua++;
 
       const telefonoGarbitua = telefonoa.replace(/[^\d+]/g, "");
+      const taldeEtiketa = taldeaSheet ? `${mailaSheet} · ${taldeaSheet}` : `${mailaSheet} · Taldea esleitu gabe`;
 
       html += `
         <article class="txartela partaide-txartela">
@@ -532,7 +730,7 @@ async function partaideakIkusi(taldea) {
             <div class="partaide-avatarra">${babestu(izena.charAt(0).toUpperCase())}</div>
             <div>
               <h3>${babestu(izena)}</h3>
-              <small>${babestu(taldea)}</small>
+              <small>${babestu(taldeEtiketa)}</small>
             </div>
           </div>
 
@@ -551,12 +749,15 @@ async function partaideakIkusi(taldea) {
     html += `</div>`;
 
     if (!kopurua) {
-      html += `<article class="txartela"><p>Ez dago ${babestu(taldea)} taldeko partaiderik.</p></article>`;
+      const mezua = taldea
+        ? `Oraindik ez dago ${babestu(maila)} · ${babestu(taldea)} taldeko partaiderik.`
+        : `Ez dago ${babestu(maila)} mailako partaiderik.`;
+      html += `<article class="txartela"><p>${mezua}</p></article>`;
     }
 
     document.getElementById("edukia").innerHTML = html;
   } catch (error) {
-    document.getElementById("edukia").innerHTML = erroreTxartela(taldea, error);
+    document.getElementById("edukia").innerHTML = erroreTxartela(maila, error);
   }
 }
 
@@ -758,6 +959,7 @@ function aukeraBotoia(ekintza, testua, mota) {
   const ikonoak = {
     egutegia: `<path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>`,
     begiraleak: `<path d="M12 3 3 8l9 5 9-5-9-5Zm-6 8v5c3 3 9 3 12 0v-5M21 9v6"/>`,
+    partaideak: `<path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7-1a3 3 0 1 0 0-6m-7 9c-4 0-7 2-7 5v2h14v-2c0-3-3-5-7-5Zm7 1c3 0 6 1.5 6 4v2h-5"/>`,
     dokumentua: `<path d="M6 3h8l4 4v14H6V3Zm8 0v5h5M9 13h6m-6 4h6"/>`,
     protokoloa: `<path d="M9 5h6m-8 2H5v14h14V7h-2M9 3h6v4H9V3Zm0 9h6m-6 4h6"/>`,
     kokalekua: `<path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Zm0-9a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>`,
