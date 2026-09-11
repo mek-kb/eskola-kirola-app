@@ -502,14 +502,26 @@ function taldeakIkusi() {
 
 function begiraleTaldeEsleipenakIrakurri(json) {
   const esleipenak = [];
+  const cols = json.table?.cols || [];
+  const normalizatu = v => garbitu(v).toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  const labels = cols.map(c => normalizatu(c.label || c.id || ""));
+  let begIdx = labels.findIndex(x => x === "begiralea" || x === "izena");
+  let mailaIdx = labels.findIndex(x => x === "maila");
+  let taldeIdx = labels.findIndex(x => x === "taldea");
+
+  if (begIdx < 0) begIdx = 0;
+  if (mailaIdx < 0) mailaIdx = 1;
+  if (taldeIdx < 0) taldeIdx = 2;
 
   (json.table?.rows || []).forEach(row => {
-    const begiralea = garbitu(gelaxka(row, 0));
-    const maila = garbitu(gelaxka(row, 1));
-    const taldea = garbitu(gelaxka(row, 2));
+    const begiralea = garbitu(gelaxka(row, begIdx));
+    const maila = garbitu(gelaxka(row, mailaIdx));
+    const taldea = garbitu(gelaxka(row, taldeIdx));
 
-    if (!begiralea || goiburuaDa(begiralea, "Begiralea")) return;
-    if (!maila || !taldea) return;
+    if (!begiralea || goiburuaDa(begiralea, "Begiralea") || goiburuaDa(begiralea, "Izena")) return;
+    if (!maila || !taldea || goiburuaDa(maila, "Maila") || goiburuaDa(taldea, "Taldea")) return;
 
     esleipenak.push({ begiralea, maila, taldea });
   });
@@ -578,7 +590,10 @@ async function nireTaldeakBegiraleaIkusi(begiralea) {
     const partaideak = partaideJson.table?.rows || [];
 
     edukiontzia.innerHTML = `
-      <div class="atal-izenburua"><h2>${babestu(begiralea)} · taldeak</h2></div>
+      <div class="atal-izenburua">
+        <h2>${babestu(begiralea)} · taldeak</h2>
+        <p style="margin:4px 0 0;"><strong>Begiralea:</strong> ${babestu(begiralea)}</p>
+      </div>
       ${esleipenak.map(e => {
         const kop = partaideak.filter(row => {
           const maila = garbitu(gelaxka(row, 1));
@@ -587,7 +602,12 @@ async function nireTaldeakBegiraleaIkusi(begiralea) {
           return izena && !goiburuaDa(izena, "Izena") && maila === e.maila && taldea === e.taldea;
         }).length;
 
-        return taldeEsleipenTxartela(e.maila, e.taldea, [e.begiralea], kop, "nireTaldeak");
+        return `
+          <div style="margin:0 0 7px 4px;color:#002155;font-size:1rem;">
+            <strong>Begiralea: ${babestu(e.begiralea)}</strong>
+          </div>
+          ${taldeEsleipenTxartela(e.maila, e.taldea, [e.begiralea], kop, "nireTaldeak")}
+        `;
       }).join("")}
     `;
   } catch (error) {
@@ -672,9 +692,13 @@ function taldeEsleipenTxartela(maila, taldea, begiraleak, kopurua, atzera) {
       <button onclick="partaideakIkusi('${babestu(maila)}','${babestu(taldea)}','${babestu(atzera)}')"
         style="width:100%;border:0;background:transparent;text-align:left;padding:0;color:inherit;font:inherit;cursor:pointer;">
         <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
-          <div>
-            <h3 style="margin:0 0 5px;">${babestu(maila)} · ${babestu(taldea)}</h3>
-            <p style="margin:0;opacity:.8;"><strong>Begiralea:</strong> ${babestu(begiraleTestua)}</p>
+          <div style="min-width:0;flex:1;">
+            <h3 style="margin:0 0 8px;">${babestu(maila)} · ${babestu(taldea)}</h3>
+            <div style="display:inline-flex;align-items:center;gap:7px;background:#002155;color:#F8F2CA;border-radius:999px;padding:7px 11px;font-size:1rem;line-height:1.1;">
+              <span aria-hidden="true">👤</span>
+              <strong>Begiralea:</strong>
+              <span>${babestu(begiraleTestua)}</span>
+            </div>
           </div>
           <strong style="font-size:1.2rem;white-space:nowrap;">${kopurua}</strong>
         </div>
