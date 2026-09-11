@@ -9,6 +9,8 @@ const TALDEAK = {
 // Hemen gehituko ditugu Google Calendar estekak.
 const IKASTURTEKO_EGUTEGIA_IRUDIA = "images/ikasturteko-egutegia.png";
 const BEGIRALEEN_EGUTEGIA_URL = "https://calendar.google.com/calendar/u/0?cid=bXV0cmlrdWtvZXNrb2xha2lyb2xhQGdtYWlsLmNvbQ";
+const LANORDUAK_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxEWN5_1p3aiKAH0EEr5QuDux_D7VekeTt5qSw95APt56nEFxEoDESDwJ0zDAcVfcya/exec";
+const LANORDUAK_BEGIRALEAK = ["Ane", "Gorka", "Eva", "Bingen", "Izaro"];
 
 function erakutsiAtala(atala) {
   navAktiboaEzarri(atala);
@@ -25,7 +27,8 @@ function erakutsiAtala(atala) {
     ikasturtekoEgutegia: ikasturtekoEgutegiaIkusi,
     begiraleenEgutegia: begiraleenEgutegiaIkusi,
     dokumentuak: dokumentuakIkusi,
-    protokoloak: protokoloakIkusi
+    protokoloak: protokoloakIkusi,
+    lanorduak: lanorduakIkusi
   };
 
   if (ekintzak[atala]) ekintzak[atala]();
@@ -47,7 +50,8 @@ function navAktiboaEzarri(atala) {
     protokoloak: "nav-agiriak",
     gehiago: "nav-gehiago",
     ordutegia: "nav-gehiago",
-    kokalekuak: "nav-gehiago"
+    kokalekuak: "nav-gehiago",
+    lanorduak: "nav-gehiago"
   };
 
   const botoia = document.getElementById(mapa[atala] || "");
@@ -610,6 +614,7 @@ function gehiagoIkusi() {
     <section class="aukera-sarea">
       ${aukeraBotoia("ordutegiaIkusi()", "Ordutegia", "egutegia")}
       ${aukeraBotoia("kokalekuakIkusi()", "Instalazioak", "kokalekua")}
+      ${aukeraBotoia("erakutsiAtala('lanorduak')", "Lan-orduen erregistroa", "lanorduak")}
       ${aukeraBotoia("erakutsiAtala('abisuak')", "Abisuak", "abisuak")}
       ${aukeraBotoia("erakutsiAtala('agiriak')", "Agiriak", "dokumentua")}
     </section>
@@ -623,7 +628,8 @@ function aukeraBotoia(ekintza, testua, mota) {
     dokumentua: `<path d="M6 3h8l4 4v14H6V3Zm8 0v5h5M9 13h6m-6 4h6"/>`,
     protokoloa: `<path d="M9 5h6m-8 2H5v14h14V7h-2M9 3h6v4H9V3Zm0 9h6m-6 4h6"/>`,
     kokalekua: `<path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Zm0-9a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>`,
-    abisuak: `<path d="M15 17H9m9-2V11a6 6 0 0 0-12 0v4l-2 2h16l-2-2"/>`
+    abisuak: `<path d="M15 17H9m9-2V11a6 6 0 0 0-12 0v4l-2 2h16l-2-2"/>`,
+    lanorduak: `<path d="M12 7v5l3 2M9 2h6M12 3a9 9 0 1 0 9 9 9 9 0 0 0-9-9Z"/>`
   };
 
   return `
@@ -632,6 +638,209 @@ function aukeraBotoia(ekintza, testua, mota) {
       <span>${babestu(testua)}</span>
     </button>
   `;
+}
+
+
+function lanorduakIkusi() {
+  const gaur = new Date();
+  const tokikoData = new Date(gaur.getTime() - gaur.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 10);
+
+  const begiraleAukerak = LANORDUAK_BEGIRALEAK
+    .map(izena => `<option value="${babestu(izena)}">${babestu(izena)}</option>`)
+    .join("");
+
+  document.getElementById("edukia").innerHTML = `
+    <button class="atzera-botoia" onclick="erakutsiAtala('gehiago')">← Gehiago</button>
+
+    <div class="orrialde-goiburua">
+      <h2>Lan-orduen erregistroa</h2>
+      <p>Ohiko lanorduak eta ordu extrak erregistratzeko.</p>
+    </div>
+
+    <article class="txartela" style="margin-bottom:18px;">
+      <h3 style="margin-top:0;">Begiralea</h3>
+
+      <label for="lanorduak-begiralea" style="display:block; margin-bottom:6px; font-weight:600;">Izena</label>
+      <select id="lanorduak-begiralea" style="width:100%; padding:12px; border:1px solid #002155; border-radius:10px; background:#fff; font-size:1rem; margin-bottom:14px;">
+        <option value="">Aukeratu begiralea</option>
+        ${begiraleAukerak}
+      </select>
+
+      <label for="lanorduak-kodea" style="display:block; margin-bottom:6px; font-weight:600;">Kodea</label>
+      <input id="lanorduak-kodea" type="password" inputmode="numeric" autocomplete="off" placeholder="Zure kodea"
+        style="width:100%; box-sizing:border-box; padding:12px; border:1px solid #002155; border-radius:10px; background:#fff; font-size:1rem;">
+    </article>
+
+    <article class="txartela" style="margin-bottom:18px;">
+      <h3 style="margin-top:0;">Ohiko orduak</h3>
+      <p style="margin-top:0; opacity:.8;">Ordua automatikoki gordeko da.</p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <button id="lanorduak-sarrera" onclick="lanorduakBidali('sarrera')"
+          style="border:0; border-radius:12px; padding:15px 10px; background:#709f1d; color:#fff; font:inherit; font-weight:700; cursor:pointer;">
+          SARRERA
+        </button>
+
+        <button id="lanorduak-irteera" onclick="lanorduakBidali('irteera')"
+          style="border:0; border-radius:12px; padding:15px 10px; background:#c2196c; color:#fff; font:inherit; font-weight:700; cursor:pointer;">
+          IRTEERA
+        </button>
+      </div>
+    </article>
+
+    <article class="txartela">
+      <h3 style="margin-top:0;">Ordu extrak</h3>
+
+      <label for="ordu-extra-data" style="display:block; margin-bottom:6px; font-weight:600;">Data</label>
+      <input id="ordu-extra-data" type="date" value="${tokikoData}"
+        style="width:100%; box-sizing:border-box; padding:12px; border:1px solid #002155; border-radius:10px; background:#fff; font-size:1rem; margin-bottom:14px;">
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+        <div>
+          <label for="ordu-extra-sarrera" style="display:block; margin-bottom:6px; font-weight:600;">Sarrera ordua</label>
+          <input id="ordu-extra-sarrera" type="time"
+            style="width:100%; box-sizing:border-box; padding:12px; border:1px solid #002155; border-radius:10px; background:#fff; font-size:1rem;">
+        </div>
+        <div>
+          <label for="ordu-extra-irteera" style="display:block; margin-bottom:6px; font-weight:600;">Irteera ordua</label>
+          <input id="ordu-extra-irteera" type="time"
+            style="width:100%; box-sizing:border-box; padding:12px; border:1px solid #002155; border-radius:10px; background:#fff; font-size:1rem;">
+        </div>
+      </div>
+
+      <label for="ordu-extra-justifikazioa" style="display:block; margin-bottom:6px; font-weight:600;">Justifikazioa <span style="font-weight:400; opacity:.7;">(aukerakoa)</span></label>
+      <textarea id="ordu-extra-justifikazioa" rows="3" placeholder="Adib.: bilera, jarduera berezia..."
+        style="width:100%; box-sizing:border-box; padding:12px; border:1px solid #002155; border-radius:10px; background:#fff; font:inherit; resize:vertical; margin-bottom:14px;"></textarea>
+
+      <button id="ordu-extra-gorde" onclick="orduExtraBidali()"
+        style="width:100%; border:0; border-radius:12px; padding:15px 10px; background:#002155; color:#F8F2CA; font:inherit; font-weight:700; cursor:pointer;">
+        ORDU EXTRAK GORDE
+      </button>
+    </article>
+
+    <div id="lanorduak-mezua" style="display:none; margin-top:16px; padding:12px 14px; border-radius:10px; font-weight:600;"></div>
+  `;
+}
+
+function lanorduakDatuOrokorrak() {
+  return {
+    begiralea: garbitu(document.getElementById("lanorduak-begiralea")?.value),
+    kodea: garbitu(document.getElementById("lanorduak-kodea")?.value)
+  };
+}
+
+function lanorduakMezuaErakutsi(mezua, ok = true) {
+  const kutxa = document.getElementById("lanorduak-mezua");
+  if (!kutxa) return;
+
+  kutxa.textContent = mezua;
+  kutxa.style.display = "block";
+  kutxa.style.background = ok ? "#e8f4d5" : "#fde7ef";
+  kutxa.style.color = "#002155";
+  kutxa.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function lanorduakBotoiakBlokeatu(blokeatuta) {
+  ["lanorduak-sarrera", "lanorduak-irteera", "ordu-extra-gorde"].forEach(id => {
+    const botoia = document.getElementById(id);
+    if (botoia) botoia.disabled = blokeatuta;
+  });
+}
+
+async function lanorduakEskaera(payload) {
+  lanorduakBotoiakBlokeatu(true);
+  lanorduakMezuaErakutsi("Erregistratzen...", true);
+
+  try {
+    const erantzuna = await fetch(LANORDUAK_WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+      cache: "no-store"
+    });
+
+    const testua = await erantzuna.text();
+    let emaitza;
+
+    try {
+      emaitza = JSON.parse(testua);
+    } catch (_) {
+      throw new Error("Apps Script-en erantzuna ezin izan da irakurri.");
+    }
+
+    lanorduakMezuaErakutsi(emaitza.mezua || "Eragiketa amaitu da.", !!emaitza.ok);
+    return emaitza;
+  } catch (error) {
+    lanorduakMezuaErakutsi(
+      "Ezin izan da erregistroa bidali. Egiaztatu internet konexioa eta Apps Script inplementazioa.",
+      false
+    );
+    return { ok: false, mezua: error?.message || "Errorea" };
+  } finally {
+    lanorduakBotoiakBlokeatu(false);
+  }
+}
+
+async function lanorduakBidali(ekintza) {
+  const { begiralea, kodea } = lanorduakDatuOrokorrak();
+
+  if (!begiralea || !kodea) {
+    lanorduakMezuaErakutsi("Begiralea aukeratu eta kodea sartu behar dituzu.", false);
+    return;
+  }
+
+  const emaitza = await lanorduakEskaera({
+    ekintza,
+    begiralea,
+    kodea
+  });
+
+  if (emaitza.ok) {
+    const kodeInput = document.getElementById("lanorduak-kodea");
+    if (kodeInput) kodeInput.value = "";
+  }
+}
+
+async function orduExtraBidali() {
+  const { begiralea, kodea } = lanorduakDatuOrokorrak();
+  const data = garbitu(document.getElementById("ordu-extra-data")?.value);
+  const sarrera = garbitu(document.getElementById("ordu-extra-sarrera")?.value);
+  const irteera = garbitu(document.getElementById("ordu-extra-irteera")?.value);
+  const justifikazioa = garbitu(document.getElementById("ordu-extra-justifikazioa")?.value);
+
+  if (!begiralea || !kodea) {
+    lanorduakMezuaErakutsi("Begiralea aukeratu eta kodea sartu behar dituzu.", false);
+    return;
+  }
+
+  if (!data || !sarrera || !irteera) {
+    lanorduakMezuaErakutsi("Data, sarrera ordua eta irteera ordua bete behar dituzu.", false);
+    return;
+  }
+
+  const emaitza = await lanorduakEskaera({
+    ekintza: "orduExtra",
+    begiralea,
+    kodea,
+    data,
+    sarrera,
+    irteera,
+    justifikazioa
+  });
+
+  if (emaitza.ok) {
+    const kodeInput = document.getElementById("lanorduak-kodea");
+    const sarreraInput = document.getElementById("ordu-extra-sarrera");
+    const irteeraInput = document.getElementById("ordu-extra-irteera");
+    const justifikazioaInput = document.getElementById("ordu-extra-justifikazioa");
+
+    if (kodeInput) kodeInput.value = "";
+    if (sarreraInput) sarreraInput.value = "";
+    if (irteeraInput) irteeraInput.value = "";
+    if (justifikazioaInput) justifikazioaInput.value = "";
+  }
 }
 
 async function ordutegiaIkusi() {
