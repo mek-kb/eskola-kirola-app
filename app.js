@@ -12,6 +12,139 @@ const BEGIRALEEN_EGUTEGIA_URL = "https://calendar.google.com/calendar/u/0?cid=bX
 const LANORDUAK_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxEWN5_1p3aiKAH0EEr5QuDux_D7VekeTt5qSw95APt56nEFxEoDESDwJ0zDAcVfcya/exec";
 const LANORDUAK_BEGIRALEAK = ["Ane", "Gorka", "Eva", "Bingen", "Izaro"];
 
+// =========================
+// APP-ERA SARTZEKO SEGURTASUNA
+// =========================
+
+const APP_SAIO_GAKOA = "meke_app_sarbidea_arte";
+const APP_SAIO_IRAUPENA_MS = 8 * 60 * 60 * 1000; // 8 ordu
+
+function appSaioaBaliozkoa() {
+  const arte = Number(localStorage.getItem(APP_SAIO_GAKOA) || 0);
+  return arte > Date.now();
+}
+
+function appSaioaGorde() {
+  localStorage.setItem(APP_SAIO_GAKOA, String(Date.now() + APP_SAIO_IRAUPENA_MS));
+}
+
+function appSaioaEzabatu() {
+  localStorage.removeItem(APP_SAIO_GAKOA);
+}
+
+function appIreki() {
+  const login = document.getElementById("sarbide-pantaila");
+  if (login) login.remove();
+
+  document.getElementById("aplikazioa").classList.remove("aplikazioa-ezkutuan");
+  erakutsiAtala("hasiera");
+}
+
+function appHasieratu() {
+  if (appSaioaBaliozkoa()) {
+    appIreki();
+  } else {
+    sarbidePantailaErakutsi();
+  }
+}
+
+function sarbidePantailaErakutsi() {
+  document.getElementById("aplikazioa").classList.add("aplikazioa-ezkutuan");
+
+  const zaharra = document.getElementById("sarbide-pantaila");
+  if (zaharra) zaharra.remove();
+
+  const panela = document.createElement("div");
+  panela.id = "sarbide-pantaila";
+  panela.style.cssText = `
+    position:fixed; inset:0; z-index:9999; background:#F8F2CA;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+    font-family:'Boogaloo', sans-serif; box-sizing:border-box;
+  `;
+
+  panela.innerHTML = `
+    <div style="width:100%;max-width:420px;text-align:center;">
+      <img src="images/icon.192.png" alt="MEKE logoa"
+           style="width:110px;height:110px;object-fit:contain;margin-bottom:10px;">
+      <h1 style="color:#002155;font-size:34px;margin:0 0 4px;">Mutrikuko Eskola Kirola</h1>
+      <p style="color:#002155;font-size:20px;margin:0 0 24px;">Langileentzako sarbidea</p>
+
+      <div style="background:white;border:3px solid #002155;border-radius:18px;padding:22px;box-shadow:0 6px 0 #002155;">
+        <label for="app-sarbide-kodea" style="display:block;text-align:left;color:#002155;font-size:20px;margin-bottom:7px;">Sarbide kodea</label>
+        <input id="app-sarbide-kodea" type="password" inputmode="numeric" autocomplete="current-password"
+          style="width:100%;box-sizing:border-box;border:2px solid #002155;border-radius:12px;padding:13px 14px;font-size:20px;margin-bottom:14px;">
+
+        <button id="app-sartu-botoia" type="button"
+          style="width:100%;border:0;border-radius:12px;padding:14px;background:#709f1d;color:#F8F2CA;font-family:'Boogaloo',sans-serif;font-size:22px;cursor:pointer;">
+          SARTU
+        </button>
+
+        <p id="app-sarbide-mezua" style="min-height:24px;margin:14px 0 0;color:#c2196c;font-size:18px;"></p>
+      </div>
+
+      <p style="color:#002155;margin:20px 8px 0;font-size:16px;">Aplikazio hau baimendutako langileentzat da.</p>
+    </div>
+  `;
+
+  document.body.appendChild(panela);
+
+  const input = document.getElementById("app-sarbide-kodea");
+  const botoia = document.getElementById("app-sartu-botoia");
+
+  botoia.addEventListener("click", appSarbideaBidali);
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") appSarbideaBidali();
+  });
+
+  setTimeout(() => input.focus(), 50);
+}
+
+async function appSarbideaBidali() {
+  const input = document.getElementById("app-sarbide-kodea");
+  const botoia = document.getElementById("app-sartu-botoia");
+  const mezua = document.getElementById("app-sarbide-mezua");
+  const kodea = String(input?.value || "").trim();
+
+  if (!kodea) {
+    mezua.textContent = "Sarbide kodea idatzi.";
+    return;
+  }
+
+  botoia.disabled = true;
+  botoia.textContent = "EGIAZTATZEN...";
+  mezua.textContent = "";
+
+  try {
+    const erantzuna = await fetch(LANORDUAK_WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        ekintza: "sarbidea",
+        kodea: kodea
+      })
+    });
+
+    const emaitza = await erantzuna.json();
+
+    if (!emaitza.ok) {
+      mezua.textContent = emaitza.mezua || "Sarbide kodea ez da zuzena.";
+      input.value = "";
+      input.focus();
+      return;
+    }
+
+    appSaioaGorde();
+    appIreki();
+
+  } catch (error) {
+    mezua.textContent = "Ezin izan da sarbidea egiaztatu. Saiatu berriro.";
+  } finally {
+    botoia.disabled = false;
+    botoia.textContent = "SARTU";
+  }
+}
+
+
 function erakutsiAtala(atala) {
   navAktiboaEzarri(atala);
 

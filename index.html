@@ -80,14 +80,12 @@
     }
 
     window.addEventListener("load", () => {
-      erakutsiAtala("hasiera");
-
       setTimeout(() => {
         document.getElementById("splash").classList.add("splash-ezkutatu");
-        document.getElementById("aplikazioa").classList.remove("aplikazioa-ezkutuan");
 
         setTimeout(() => {
           document.getElementById("splash").style.display = "none";
+          appHasieratu();
         }, 600);
       }, 1200);
     });
