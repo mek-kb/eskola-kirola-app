@@ -411,7 +411,7 @@ async function hasieraIkusi() {
     const saioa = begiraleSaioaLortu();
     const saioBegiralea = garbitu(saioa?.izena);
     const nireEsleipenak = begiraleTaldeEsleipenakIrakurri(esleipenJson)
-      .filter(e => testuaKonparatzeko(e.begiralea) === testuaKonparatzeko(saioBegiralea));
+      .filter(e => e.begiralea === saioBegiralea);
 
     const taldeKopuruak = {};
 
@@ -664,35 +664,28 @@ function taldeakIkusi() {
   `;
 }
 
-
-function testuaKonparatzeko(v) {
-  return garbitu(v)
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .toLowerCase();
-}
-
 function begiraleTaldeEsleipenakIrakurri(json) {
   const esleipenak = [];
-  const rows = json?.table?.rows || [];
+  const cols = json.table?.cols || [];
+  const normalizatu = v => garbitu(v).toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-  rows.forEach(row => {
-    const begiralea = garbitu(gelaxka(row, 0));
-    const maila = garbitu(gelaxka(row, 1));
-    const taldea = garbitu(gelaxka(row, 2));
+  const labels = cols.map(c => normalizatu(c.label || c.id || ""));
+  let begIdx = labels.findIndex(x => x === "begiralea" || x === "izena");
+  let mailaIdx = labels.findIndex(x => x === "maila");
+  let taldeIdx = labels.findIndex(x => x === "taldea");
 
-    // Begiralea + Maila + Taldea hirurak behar dira.
-    // Taldea hutsik duten lerroak ez dira oraindik esleipen gisa erakusten.
-    if (!begiralea || !maila || !taldea) return;
+  if (begIdx < 0) begIdx = 0;
+  if (mailaIdx < 0) mailaIdx = 1;
+  if (taldeIdx < 0) taldeIdx = 2;
 
-    // Segurtasunagatik, goiburu-lerroa datu gisa etorriko balitz ere baztertu.
-    if (
-      begiralea.toLowerCase() === "begiralea" &&
-      maila.toLowerCase() === "maila" &&
-      taldea.toLowerCase() === "taldea"
-    ) return;
+  (json.table?.rows || []).forEach(row => {
+    const begiralea = garbitu(gelaxka(row, begIdx));
+    const maila = garbitu(gelaxka(row, mailaIdx));
+    const taldea = garbitu(gelaxka(row, taldeIdx));
+
+    if (!begiralea || goiburuaDa(begiralea, "Begiralea") || goiburuaDa(begiralea, "Izena")) return;
+    if (!maila || !taldea || goiburuaDa(maila, "Maila") || goiburuaDa(taldea, "Taldea")) return;
 
     esleipenak.push({ begiralea, maila, taldea });
   });
@@ -716,51 +709,12 @@ async function nireTaldeakIkusi() {
     <button class="atzera-botoia" onclick="erakutsiAtala('taldeak')">← Taldeak</button>
     <div class="orrialde-goiburua">
       <h2>Nire taldeak</h2>
-      <p>${babestu(begiralea)} · diagnostikoa</p>
-    </div>
-    <div id="nire-taldeak-diagnostikoa" class="txartela" style="margin-bottom:16px;">
-      <strong>Diagnostikoa kargatzen...</strong>
+      <p>${babestu(begiralea)} · zuri esleitutako taldeak.</p>
     </div>
     <div id="nire-taldeak-zerrenda"></div>
   `;
 
-  const diag = document.getElementById("nire-taldeak-diagnostikoa");
-
-  try {
-    const json = await sheetKargatu("BegiraleakTaldea");
-    const guztiak = begiraleTaldeEsleipenakIrakurri(json);
-    const nireak = guztiak.filter(
-      e => testuaKonparatzeko(e.begiralea) === testuaKonparatzeko(begiralea)
-    );
-
-    diag.innerHTML = `
-      <h3 style="margin-top:0;">DIAGNOSTIKOA</h3>
-      <p><strong>Saioa:</strong> ${babestu(begiralea)}</p>
-      <p><strong>Fitxa kargatuta:</strong> BAI</p>
-      <p><strong>Irakurritako esleipenak:</strong> ${guztiak.length}</p>
-      <p><strong>${babestu(begiralea)}-ren esleipenak:</strong>
-        ${nireak.length
-          ? nireak.map(e => `${babestu(e.maila)}-${babestu(e.taldea)}`).join(", ")
-          : "BAT ERE EZ"}
-      </p>
-      <p style="font-size:.9rem;opacity:.75;">Lehen 5 lerro irakurriak:
-        ${guztiak.slice(0,5).map(e => `${babestu(e.begiralea)} / ${babestu(e.maila)} / ${babestu(e.taldea)}`).join(" · ") || "ez dago daturik"}
-      </p>
-    `;
-
-    await nireTaldeakBegiraleaIkusi(begiralea);
-
-  } catch (err) {
-    diag.innerHTML = `
-      <h3 style="margin-top:0;">DIAGNOSTIKOA</h3>
-      <p><strong>Saioa:</strong> ${babestu(begiralea)}</p>
-      <p><strong>Fitxa kargatuta:</strong> EZ</p>
-      <p><strong>Errorea:</strong> ${babestu(err?.message || String(err))}</p>
-      <p>Bilatutako fitxaren izena: <strong>BegiraleakTaldea</strong></p>
-    `;
-    document.getElementById("nire-taldeak-zerrenda").innerHTML =
-      `<div class="errorea">Ezin izan dira taldeak kargatu.</div>`;
-  }
+  await nireTaldeakBegiraleaIkusi(begiralea);
 }
 
 async function nireTaldeakBegiraleaIkusi(begiralea) {
@@ -781,7 +735,7 @@ async function nireTaldeakBegiraleaIkusi(begiralea) {
     ]);
 
     const esleipenak = begiraleTaldeEsleipenakIrakurri(esleipenJson)
-      .filter(e => testuaKonparatzeko(e.begiralea) === testuaKonparatzeko(begiralea));
+      .filter(e => e.begiralea === begiralea);
 
     if (!esleipenak.length) {
       edukiontzia.innerHTML = `<article class="txartela"><p>Ez dago ${babestu(begiralea)} begiraleari esleitutako talderik.</p></article>`;
