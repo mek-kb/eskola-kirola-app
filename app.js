@@ -716,12 +716,51 @@ async function nireTaldeakIkusi() {
     <button class="atzera-botoia" onclick="erakutsiAtala('taldeak')">← Taldeak</button>
     <div class="orrialde-goiburua">
       <h2>Nire taldeak</h2>
-      <p>${babestu(begiralea)} · zuri esleitutako taldeak.</p>
+      <p>${babestu(begiralea)} · diagnostikoa</p>
+    </div>
+    <div id="nire-taldeak-diagnostikoa" class="txartela" style="margin-bottom:16px;">
+      <strong>Diagnostikoa kargatzen...</strong>
     </div>
     <div id="nire-taldeak-zerrenda"></div>
   `;
 
-  await nireTaldeakBegiraleaIkusi(begiralea);
+  const diag = document.getElementById("nire-taldeak-diagnostikoa");
+
+  try {
+    const json = await sheetKargatu("BegiraleakTaldea");
+    const guztiak = begiraleTaldeEsleipenakIrakurri(json);
+    const nireak = guztiak.filter(
+      e => testuaKonparatzeko(e.begiralea) === testuaKonparatzeko(begiralea)
+    );
+
+    diag.innerHTML = `
+      <h3 style="margin-top:0;">DIAGNOSTIKOA</h3>
+      <p><strong>Saioa:</strong> ${babestu(begiralea)}</p>
+      <p><strong>Fitxa kargatuta:</strong> BAI</p>
+      <p><strong>Irakurritako esleipenak:</strong> ${guztiak.length}</p>
+      <p><strong>${babestu(begiralea)}-ren esleipenak:</strong>
+        ${nireak.length
+          ? nireak.map(e => `${babestu(e.maila)}-${babestu(e.taldea)}`).join(", ")
+          : "BAT ERE EZ"}
+      </p>
+      <p style="font-size:.9rem;opacity:.75;">Lehen 5 lerro irakurriak:
+        ${guztiak.slice(0,5).map(e => `${babestu(e.begiralea)} / ${babestu(e.maila)} / ${babestu(e.taldea)}`).join(" · ") || "ez dago daturik"}
+      </p>
+    `;
+
+    await nireTaldeakBegiraleaIkusi(begiralea);
+
+  } catch (err) {
+    diag.innerHTML = `
+      <h3 style="margin-top:0;">DIAGNOSTIKOA</h3>
+      <p><strong>Saioa:</strong> ${babestu(begiralea)}</p>
+      <p><strong>Fitxa kargatuta:</strong> EZ</p>
+      <p><strong>Errorea:</strong> ${babestu(err?.message || String(err))}</p>
+      <p>Bilatutako fitxaren izena: <strong>BegiraleakTaldea</strong></p>
+    `;
+    document.getElementById("nire-taldeak-zerrenda").innerHTML =
+      `<div class="errorea">Ezin izan dira taldeak kargatu.</div>`;
+  }
 }
 
 async function nireTaldeakBegiraleaIkusi(begiralea) {
