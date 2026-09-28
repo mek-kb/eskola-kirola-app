@@ -759,6 +759,8 @@ async function partaideakIkusi(maila, taldea = "", atzera = "taldeak") {
           </div>
 
           <div class="partaide-datuak">
+            ${datuLerroa("Maila", mailaSheet || "—")}
+            ${datuLerroa("Taldea", taldeaSheet || "Esleitu gabe")}
             ${datuLerroa("Tutorea", tutorea || "—")}
             ${datuLerroa("Telefonoa", telefonoa || "—", telefonoa ? `tel:${telefonoGarbitua}` : "")}
             ${datuLerroa("Alergiak", alergiak || "—")}
