@@ -1,4 +1,4 @@
-const CACHE_NAME = "eskola-kirola-app-diseinu-berria-v3";
+const CACHE_NAME = "eskola-kirola-app-diseinu-berria-v4";
 
 const FILES_TO_CACHE = [
   "./",
