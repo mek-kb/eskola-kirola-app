@@ -411,7 +411,7 @@ async function hasieraIkusi() {
     const saioa = begiraleSaioaLortu();
     const saioBegiralea = garbitu(saioa?.izena);
     const nireEsleipenak = begiraleTaldeEsleipenakIrakurri(esleipenJson)
-      .filter(e => e.begiralea === saioBegiralea);
+      .filter(e => testuaKonparatzeko(e.begiralea) === testuaKonparatzeko(saioBegiralea));
 
     const taldeKopuruak = {};
 
@@ -664,28 +664,35 @@ function taldeakIkusi() {
   `;
 }
 
+
+function testuaKonparatzeko(v) {
+  return garbitu(v)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
 function begiraleTaldeEsleipenakIrakurri(json) {
   const esleipenak = [];
-  const cols = json.table?.cols || [];
-  const normalizatu = v => garbitu(v).toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const rows = json?.table?.rows || [];
 
-  const labels = cols.map(c => normalizatu(c.label || c.id || ""));
-  let begIdx = labels.findIndex(x => x === "begiralea" || x === "izena");
-  let mailaIdx = labels.findIndex(x => x === "maila");
-  let taldeIdx = labels.findIndex(x => x === "taldea");
+  rows.forEach(row => {
+    const begiralea = garbitu(gelaxka(row, 0));
+    const maila = garbitu(gelaxka(row, 1));
+    const taldea = garbitu(gelaxka(row, 2));
 
-  if (begIdx < 0) begIdx = 0;
-  if (mailaIdx < 0) mailaIdx = 1;
-  if (taldeIdx < 0) taldeIdx = 2;
+    // Begiralea + Maila + Taldea hirurak behar dira.
+    // Taldea hutsik duten lerroak ez dira oraindik esleipen gisa erakusten.
+    if (!begiralea || !maila || !taldea) return;
 
-  (json.table?.rows || []).forEach(row => {
-    const begiralea = garbitu(gelaxka(row, begIdx));
-    const maila = garbitu(gelaxka(row, mailaIdx));
-    const taldea = garbitu(gelaxka(row, taldeIdx));
-
-    if (!begiralea || goiburuaDa(begiralea, "Begiralea") || goiburuaDa(begiralea, "Izena")) return;
-    if (!maila || !taldea || goiburuaDa(maila, "Maila") || goiburuaDa(taldea, "Taldea")) return;
+    // Segurtasunagatik, goiburu-lerroa datu gisa etorriko balitz ere baztertu.
+    if (
+      begiralea.toLowerCase() === "begiralea" &&
+      maila.toLowerCase() === "maila" &&
+      taldea.toLowerCase() === "taldea"
+    ) return;
 
     esleipenak.push({ begiralea, maila, taldea });
   });
@@ -735,7 +742,7 @@ async function nireTaldeakBegiraleaIkusi(begiralea) {
     ]);
 
     const esleipenak = begiraleTaldeEsleipenakIrakurri(esleipenJson)
-      .filter(e => e.begiralea === begiralea);
+      .filter(e => testuaKonparatzeko(e.begiralea) === testuaKonparatzeko(begiralea));
 
     if (!esleipenak.length) {
       edukiontzia.innerHTML = `<article class="txartela"><p>Ez dago ${babestu(begiralea)} begiraleari esleitutako talderik.</p></article>`;
