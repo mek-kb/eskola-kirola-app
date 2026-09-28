@@ -389,7 +389,8 @@ async function hasieraIkusi() {
   try {
     const emaitzak = await Promise.allSettled([
       sheetKargatu("Partaideak"),
-      sheetKargatu("Abisuak")
+      sheetKargatu("Abisuak"),
+      sheetKargatu("BegiraleakTaldea")
     ]);
 
     const partaideak =
@@ -401,6 +402,16 @@ async function hasieraIkusi() {
       emaitzak[1].status === "fulfilled"
         ? emaitzak[1].value
         : { table: { rows: [] } };
+
+    const esleipenJson =
+      emaitzak[2].status === "fulfilled"
+        ? emaitzak[2].value
+        : { table: { rows: [] } };
+
+    const saioa = begiraleSaioaLortu();
+    const saioBegiralea = garbitu(saioa?.izena);
+    const nireEsleipenak = begiraleTaldeEsleipenakIrakurri(esleipenJson)
+      .filter(e => e.begiralea === saioBegiralea);
 
     const taldeKopuruak = {};
 
@@ -453,6 +464,25 @@ async function hasieraIkusi() {
           <p class="gaurko-data">${babestu(gaur)}</p>
         </div>
         <img src="images/icon.192.png" alt="MEKE logoa">
+      </section>
+
+      <div class="atal-izenburua" style="margin-top:20px;">
+        <h2>${saioBegiralea ? `Kaixo, ${babestu(saioBegiralea)} 👋` : "Nire taldeak"}</h2>
+        <button onclick="erakutsiAtala('nireTaldeak')">Ikusi guztiak</button>
+      </div>
+
+      <section class="programa-atala">
+        <h3>Nire taldeak</h3>
+        <div class="talde-botoiak">
+          ${nireEsleipenak.length
+            ? nireEsleipenak.map(e => `
+                <button onclick="taldePartaideakIkusi('${babestu(e.maila)}','${babestu(e.taldea)}','nireTaldeak')">
+                  ${babestu(e.maila)} · ${babestu(e.taldea)}
+                </button>
+              `).join("")
+            : `<p style="margin:0;">Ez dago zuri esleitutako talderik.</p>`
+          }
+        </div>
       </section>
 
       <section class="web-atalak">
@@ -667,33 +697,24 @@ async function nireTaldeakIkusi() {
   navAktiboaEzarri("taldeak");
   kargatzenErakutsi();
 
-  try {
-    const json = await sheetKargatu("BegiraleakTaldea");
-    const esleipenak = begiraleTaldeEsleipenakIrakurri(json);
-    const begiraleak = [...new Set(esleipenak.map(e => e.begiralea))]
-      .sort((a, b) => a.localeCompare(b, "eu"));
+  const saioa = begiraleSaioaLortu();
+  const begiralea = garbitu(saioa?.izena);
 
-    document.getElementById("edukia").innerHTML = `
-      <button class="atzera-botoia" onclick="erakutsiAtala('taldeak')">← Taldeak</button>
-      <div class="orrialde-goiburua">
-        <h2>Nire taldeak</h2>
-        <p>Aukeratu begiralea bere taldeak ikusteko.</p>
-      </div>
-
-      <article class="txartela">
-        <label for="nire-taldeak-begiralea" style="display:block;margin-bottom:7px;font-weight:600;">Begiralea</label>
-        <select id="nire-taldeak-begiralea" onchange="nireTaldeakBegiraleaIkusi(this.value)"
-          style="width:100%;padding:12px;border:1px solid #002155;border-radius:10px;background:#fff;font-size:1rem;">
-          <option value="">Aukeratu begiralea</option>
-          ${begiraleak.map(izena => `<option value="${babestu(izena)}">${babestu(izena)}</option>`).join("")}
-        </select>
-      </article>
-
-      <div id="nire-taldeak-zerrenda" style="margin-top:18px;"></div>
-    `;
-  } catch (error) {
-    document.getElementById("edukia").innerHTML = erroreTxartela("Nire taldeak", error);
+  if (!begiralea) {
+    begiraleLoginPantailaErakutsi();
+    return;
   }
+
+  document.getElementById("edukia").innerHTML = `
+    <button class="atzera-botoia" onclick="erakutsiAtala('taldeak')">← Taldeak</button>
+    <div class="orrialde-goiburua">
+      <h2>Nire taldeak</h2>
+      <p>${babestu(begiralea)} · zuri esleitutako taldeak.</p>
+    </div>
+    <div id="nire-taldeak-zerrenda"></div>
+  `;
+
+  await nireTaldeakBegiraleaIkusi(begiralea);
 }
 
 async function nireTaldeakBegiraleaIkusi(begiralea) {
