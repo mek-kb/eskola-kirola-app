@@ -32,6 +32,134 @@ function appSaioaEzabatu() {
   localStorage.removeItem(APP_SAIO_GAKOA);
 }
 
+
+// =========================
+// BEGIRALEAREN SAIO PERTSONALA
+// =========================
+
+const BEGIRALE_SAIO_GAKOA = "meke_begirale_saioa";
+
+function begiraleSaioaLortu() {
+  try {
+    return JSON.parse(localStorage.getItem(BEGIRALE_SAIO_GAKOA) || "null");
+  } catch (_) {
+    return null;
+  }
+}
+
+function begiraleSaioaGorde(izena) {
+  localStorage.setItem(BEGIRALE_SAIO_GAKOA, JSON.stringify({ izena }));
+}
+
+function begiraleSaioaEzabatu() {
+  localStorage.removeItem(BEGIRALE_SAIO_GAKOA);
+}
+
+function begiraleSaioaBadago() {
+  return !!begiraleSaioaLortu()?.izena;
+}
+
+function begiraleLoginPantailaErakutsi() {
+  document.getElementById("aplikazioa").classList.add("aplikazioa-ezkutuan");
+
+  const zaharra = document.getElementById("begirale-login-pantaila");
+  if (zaharra) zaharra.remove();
+
+  const panela = document.createElement("div");
+  panela.id = "begirale-login-pantaila";
+  panela.style.cssText = `
+    position:fixed; inset:0; z-index:9999; background:#F8F2CA;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+    font-family:'Boogaloo', sans-serif; box-sizing:border-box;
+  `;
+
+  panela.innerHTML = `
+    <div style="width:100%;max-width:420px;text-align:center;">
+      <img src="images/icon.192.png" alt="MEKE logoa"
+           style="width:110px;height:110px;object-fit:contain;margin-bottom:10px;">
+      <h1 style="color:#002155;font-size:34px;margin:0 0 4px;">Nire saioa</h1>
+      <p style="color:#002155;font-size:20px;margin:0 0 24px;">Aukeratu zure izena eta sartu kode pertsonala</p>
+
+      <div style="background:white;border:3px solid #002155;border-radius:18px;padding:22px;box-shadow:0 6px 0 #002155;text-align:left;">
+        <label for="begirale-login-izena" style="display:block;color:#002155;font-size:20px;margin-bottom:7px;">Begiralea</label>
+        <select id="begirale-login-izena"
+          style="width:100%;box-sizing:border-box;border:2px solid #002155;border-radius:12px;padding:13px 14px;font-size:18px;margin-bottom:14px;background:#fff;">
+          <option value="">Aukeratu...</option>
+          ${LANORDUAK_BEGIRALEAK.map(izena => `<option value="${babestu(izena)}">${babestu(izena)}</option>`).join("")}
+        </select>
+
+        <label for="begirale-login-kodea" style="display:block;color:#002155;font-size:20px;margin-bottom:7px;">Kode pertsonala</label>
+        <input id="begirale-login-kodea" type="password" inputmode="numeric" autocomplete="current-password"
+          style="width:100%;box-sizing:border-box;border:2px solid #002155;border-radius:12px;padding:13px 14px;font-size:20px;margin-bottom:14px;">
+
+        <button id="begirale-login-botoia" type="button"
+          style="width:100%;border:0;border-radius:12px;padding:14px;background:#709f1d;color:#F8F2CA;font-family:'Boogaloo',sans-serif;font-size:22px;cursor:pointer;">
+          SAIOA HASI
+        </button>
+
+        <p id="begirale-login-mezua" style="min-height:24px;margin:14px 0 0;color:#c2196c;font-size:18px;text-align:center;"></p>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(panela);
+  document.getElementById("begirale-login-botoia").addEventListener("click", begiraleLoginBidali);
+  document.getElementById("begirale-login-kodea").addEventListener("keydown", e => {
+    if (e.key === "Enter") begiraleLoginBidali();
+  });
+}
+
+async function begiraleLoginBidali() {
+  const izenaEl = document.getElementById("begirale-login-izena");
+  const kodeaEl = document.getElementById("begirale-login-kodea");
+  const botoia = document.getElementById("begirale-login-botoia");
+  const mezua = document.getElementById("begirale-login-mezua");
+
+  const begiralea = String(izenaEl?.value || "").trim();
+  const kodea = String(kodeaEl?.value || "").trim();
+
+  if (!begiralea || !kodea) {
+    mezua.textContent = "Begiralea aukeratu eta kode pertsonala idatzi.";
+    return;
+  }
+
+  botoia.disabled = true;
+  botoia.textContent = "EGIAZTATZEN...";
+  mezua.textContent = "";
+
+  try {
+    const erantzuna = await fetch(LANORDUAK_WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        ekintza: "begiraleLogin",
+        begiralea,
+        kodea
+      })
+    });
+
+    const emaitza = await erantzuna.json();
+
+    if (!emaitza.ok) {
+      mezua.textContent = emaitza.mezua || "Begiralea edo kodea ez da zuzena.";
+      kodeaEl.value = "";
+      kodeaEl.focus();
+      return;
+    }
+
+    begiraleSaioaGorde(emaitza.begiralea || begiralea);
+    const login = document.getElementById("begirale-login-pantaila");
+    if (login) login.remove();
+    appIreki();
+
+  } catch (error) {
+    mezua.textContent = "Ezin izan da saioa egiaztatu. Saiatu berriro.";
+  } finally {
+    botoia.disabled = false;
+    botoia.textContent = "SAIOA HASI";
+  }
+}
+
 function appIreki() {
   const login = document.getElementById("sarbide-pantaila");
   if (login) login.remove();
@@ -41,11 +169,17 @@ function appIreki() {
 }
 
 function appHasieratu() {
-  if (appSaioaBaliozkoa()) {
-    appIreki();
-  } else {
+  if (!appSaioaBaliozkoa()) {
     sarbidePantailaErakutsi();
+    return;
   }
+
+  if (!begiraleSaioaBadago()) {
+    begiraleLoginPantailaErakutsi();
+    return;
+  }
+
+  appIreki();
 }
 
 function sarbidePantailaErakutsi() {
@@ -134,7 +268,7 @@ async function appSarbideaBidali() {
     }
 
     appSaioaGorde();
-    appIreki();
+    begiraleLoginPantailaErakutsi();
 
   } catch (error) {
     mezua.textContent = "Ezin izan da sarbidea egiaztatu. Saiatu berriro.";
