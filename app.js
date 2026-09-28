@@ -466,6 +466,29 @@ async function hasieraIkusi() {
         <img src="images/icon.192.png" alt="MEKE logoa">
       </section>
 
+      <button
+        onclick="erakutsiAtala('lanorduak')"
+        style="
+          width:100%;
+          box-sizing:border-box;
+          margin:20px 0 6px;
+          padding:16px 18px;
+          border:3px solid #002155;
+          border-radius:16px;
+          background:#709f1d;
+          color:#F8F2CA;
+          font:inherit;
+          font-size:1.15rem;
+          font-weight:700;
+          cursor:pointer;
+          box-shadow:0 4px 0 #002155;
+        ">
+        ⏱ LAN-ORDUEN ERREGISTROA
+        <span style="display:block;font-size:.88rem;font-weight:400;margin-top:3px;">
+          Sarrera · Irteera · Ordu extrak
+        </span>
+      </button>
+
       <div class="atal-izenburua" style="margin-top:20px;">
         <h2>${saioBegiralea ? `Kaixo, ${babestu(saioBegiralea)} 👋` : "Nire taldeak"}</h2>
         <button onclick="erakutsiAtala('nireTaldeak')">Ikusi guztiak</button>
