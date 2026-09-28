@@ -390,7 +390,7 @@ async function hasieraIkusi() {
     const emaitzak = await Promise.allSettled([
       sheetKargatu("Partaideak"),
       sheetKargatu("Abisuak"),
-      sheetKargatu("BegiraleTaldeak")
+      sheetKargatu("BegiraleakTaldeak")
     ]);
 
     const partaideak =
@@ -728,7 +728,7 @@ async function nireTaldeakBegiraleaIkusi(begiralea) {
 
   try {
     const [esleipenJson, partaideJson] = await Promise.all([
-      sheetKargatu("BegiraleTaldeak"),
+      sheetKargatu("BegiraleakTaldeak"),
       sheetKargatu("Partaideak")
     ]);
 
@@ -774,7 +774,7 @@ async function taldeGuztiakIkusi() {
 
   try {
     const [esleipenJson, partaideJson] = await Promise.all([
-      sheetKargatu("BegiraleTaldeak"),
+      sheetKargatu("BegiraleakTaldeak"),
       sheetKargatu("Partaideak")
     ]);
 
