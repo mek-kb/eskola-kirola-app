@@ -476,7 +476,7 @@ async function hasieraIkusi() {
         <div class="talde-botoiak">
           ${nireEsleipenak.length
             ? nireEsleipenak.map(e => `
-                <button onclick="nireTaldekoPartaideakIkusi('${babestu(e.maila)}','${babestu(e.taldea)}')">
+                <button onclick="partaideakIkusi('${babestu(e.maila)}','${babestu(e.taldea)}','nireTaldeak')">
                   ${babestu(e.maila)} · ${babestu(e.taldea)}
                 </button>
               `).join("")
@@ -691,45 +691,6 @@ function begiraleTaldeEsleipenakIrakurri(json) {
   return esleipenak;
 }
 
-
-async function nireTaldekoPartaideakIkusi(maila, taldea) {
-  navAktiboaEzarri("taldeak");
-  kargatzenErakutsi();
-
-  try {
-    const json = await sheetKargatu("Partaideak");
-    const partaideak = partaideakIrakurri(json);
-
-    const filtratuak = partaideak.filter(p =>
-      testuaKonparatzeko(p.maila) === testuaKonparatzeko(maila) &&
-      testuaKonparatzeko(p.taldea) === testuaKonparatzeko(taldea)
-    );
-
-    document.getElementById("edukia").innerHTML = `
-      <button class="atzera-botoia" onclick="erakutsiAtala('nireTaldeak')">← Nire taldeak</button>
-      <div class="orrialde-goiburua">
-        <h2>${babestu(maila)} · ${babestu(taldea)}</h2>
-        <p>${filtratuak.length} partaide</p>
-      </div>
-
-      <div class="partaide-zerrenda">
-        ${filtratuak.length
-          ? filtratuak.map(p => `
-              <button class="partaide-botoia" onclick="partaideFitxaIkusi('${babestu(p.kodea || p.id || "")}')">
-                <span>${babestu(p.izena || p.izenAbizenak || "Partaidea")}</span>
-              </button>
-            `).join("")
-          : `<div class="txartela"><p>Ez dago ${babestu(maila)} · ${babestu(taldea)} taldeko partaiderik.</p></div>`
-        }
-      </div>
-    `;
-  } catch (err) {
-    document.getElementById("edukia").innerHTML = `
-      <button class="atzera-botoia" onclick="erakutsiAtala('nireTaldeak')">← Nire taldeak</button>
-      <div class="errorea">Ezin izan dira taldeko partaideak kargatu.</div>
-    `;
-  }
-}
 
 async function nireTaldeakIkusi() {
   navAktiboaEzarri("taldeak");
