@@ -10,7 +10,7 @@ const TALDEAK = {
 const IKASTURTEKO_EGUTEGIA_IRUDIA = "images/ikasturteko-egutegia.png";
 const BEGIRALEEN_EGUTEGIA_URL = "https://calendar.google.com/calendar/u/0?cid=bXV0cmlrdWtvZXNrb2xha2lyb2xhQGdtYWlsLmNvbQ";
 const LANORDUAK_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxEWN5_1p3aiKAH0EEr5QuDux_D7VekeTt5qSw95APt56nEFxEoDESDwJ0zDAcVfcya/exec";
-const LANORDUAK_BEGIRALEAK = ["Ane", "Gorka", "Eva", "Bingen", "Izaro"];
+const LANORDUAK_BEGIRALEAK = ["Ane", "Gorka", "Eva", "Bingen", "Izaro", "Julen"];
 
 // =========================
 // APP-ERA SARTZEKO SEGURTASUNA
