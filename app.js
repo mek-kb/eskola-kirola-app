@@ -12,26 +12,6 @@ const BEGIRALEEN_EGUTEGIA_URL = "https://calendar.google.com/calendar/u/0?cid=bX
 const LANORDUAK_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxEWN5_1p3aiKAH0EEr5QuDux_D7VekeTt5qSw95APt56nEFxEoDESDwJ0zDAcVfcya/exec";
 const LANORDUAK_BEGIRALEAK = ["Ane", "Gorka", "Eva", "Bingen", "Izaro", "Julen"];
 
-// =========================
-// APP-ERA SARTZEKO SEGURTASUNA
-// =========================
-
-const APP_SAIO_GAKOA = "meke_app_sarbidea_arte";
-const APP_SAIO_IRAUPENA_MS = 8 * 60 * 60 * 1000; // 8 ordu
-
-function appSaioaBaliozkoa() {
-  const arte = Number(localStorage.getItem(APP_SAIO_GAKOA) || 0);
-  return arte > Date.now();
-}
-
-function appSaioaGorde() {
-  localStorage.setItem(APP_SAIO_GAKOA, String(Date.now() + APP_SAIO_IRAUPENA_MS));
-}
-
-function appSaioaEzabatu() {
-  localStorage.removeItem(APP_SAIO_GAKOA);
-}
-
 
 // =========================
 // BEGIRALEAREN SAIO PERTSONALA
