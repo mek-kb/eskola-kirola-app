@@ -35,6 +35,18 @@ function begiraleSaioaEzabatu() {
   localStorage.removeItem(BEGIRALE_SAIO_GAKOA);
 }
 
+function begiraleSaioaItxi() {
+  begiraleSaioaEzabatu();
+
+  const aplikazioa = document.getElementById("aplikazioa");
+  if (aplikazioa) aplikazioa.classList.add("aplikazioa-ezkutuan");
+
+  const sarbidea = document.getElementById("sarbide-pantaila");
+  if (sarbidea) sarbidea.remove();
+
+  begiraleLoginPantailaErakutsi();
+}
+
 function begiraleSaioaBadago() {
   return !!begiraleSaioaLortu()?.izena;
 }
@@ -149,11 +161,6 @@ function appIreki() {
 }
 
 function appHasieratu() {
-  if (!appSaioaBaliozkoa()) {
-    sarbidePantailaErakutsi();
-    return;
-  }
-
   if (!begiraleSaioaBadago()) {
     begiraleLoginPantailaErakutsi();
     return;
@@ -1135,6 +1142,11 @@ function gehiagoIkusi() {
       ${aukeraBotoia("erakutsiAtala('abisuak')", "Abisuak", "abisuak")}
       ${aukeraBotoia("erakutsiAtala('agiriak')", "Agiriak", "dokumentua")}
     </section>
+
+    <button type="button" onclick="begiraleSaioaItxi()"
+      style="width:100%;box-sizing:border-box;margin-top:26px;padding:15px 18px;border:3px solid #002155;border-radius:14px;background:#fff;color:#002155;font:inherit;font-size:1.05rem;font-weight:700;cursor:pointer;">
+      🚪 SAIOA ITXI
+    </button>
   `;
 }
 
