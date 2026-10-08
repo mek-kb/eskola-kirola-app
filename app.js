@@ -1050,19 +1050,19 @@ function instalazioenEgutegiaIkusi(mota) {
   const egutegiak = {
     lh1246: {
       izenburua: "LH1-LH2-LH4-LH6 Instalazioak",
-      ids: [
-        "mutrikukoeskolakirola@gmail.com",
-        "c34a07e7f122238624391124241a4808282ada68834081a193f9dc26ab7c9973@group.calendar.google.com",
-        "b28451ff946a9b6333f1cc054eb8d263feec1b96c8440ca9ce4414e669d854c2@group.calendar.google.com"
+      calendars: [
+        { id: "mutrikukoeskolakirola@gmail.com", color: "#AD1457" }, // MEKE
+        { id: "c34a07e7f122238624391124241a4808282ada68834081a193f9dc26ab7c9973@group.calendar.google.com", color: "#D50000" }, // GORRIA
+        { id: "b28451ff946a9b6333f1cc054eb8d263feec1b96c8440ca9ce4414e669d854c2@group.calendar.google.com", color: "#C0CA33" } // BERDEA
       ]
     },
     lh35: {
       izenburua: "LH3-LH5 Instalazioak",
-      ids: [
-        "mutrikukoeskolakirola@gmail.com",
-        "86688c7cba7ec1fe233aa8380423c5d6752b52bef6097c68fce0d011ae382ae8@group.calendar.google.com",
-        "e7ab91b58c9831564d3376108b910dea500445f0af259fe40dd0974fde95e421@group.calendar.google.com",
-        "a2f0cbcc2d270daf898d9e7d090ef99e537a90b9ec774a1c317860b3c48dd2c7@group.calendar.google.com"
+      calendars: [
+        { id: "mutrikukoeskolakirola@gmail.com", color: "#AD1457" }, // MEKE
+        { id: "86688c7cba7ec1fe233aa8380423c5d6752b52bef6097c68fce0d011ae382ae8@group.calendar.google.com", color: "#000000" }, // BELTZA
+        { id: "e7ab91b58c9831564d3376108b910dea500445f0af259fe40dd0974fde95e421@group.calendar.google.com", color: "#F6BF26" }, // HORIA
+        { id: "a2f0cbcc2d270daf898d9e7d090ef99e537a90b9ec774a1c317860b3c48dd2c7@group.calendar.google.com", color: "#8E24AA" } // MOREA
       ]
     }
   };
@@ -1071,7 +1071,10 @@ function instalazioenEgutegiaIkusi(mota) {
   if (!aukera) return begiraleenEgutegiaIkusi();
 
   const params = new URLSearchParams();
-  aukera.ids.forEach(id => params.append("src", id));
+  aukera.calendars.forEach(({ id, color }) => {
+    params.append("src", id);
+    params.append("color", color);
+  });
   params.set("ctz", "Europe/Madrid");
   params.set("mode", "MONTH");
   const embedUrl = `https://calendar.google.com/calendar/embed?${params.toString()}`;
@@ -1080,7 +1083,7 @@ function instalazioenEgutegiaIkusi(mota) {
     <button class="atzera-botoia" onclick="begiraleenEgutegiaIkusi()">← Begiraleen egutegia</button>
     <div class="orrialde-goiburua">
       <h2>${babestu(aukera.izenburua)}</h2>
-      <p>Google Calendar · ${aukera.ids.length} egutegi batera</p>
+      <p>Google Calendar · ${aukera.calendars.length} egutegi batera</p>
     </div>
     <article class="txartela" style="padding:0; overflow:hidden;">
       <iframe
