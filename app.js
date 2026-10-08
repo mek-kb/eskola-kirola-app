@@ -1033,27 +1033,66 @@ function ikasturtekoEgutegiaIkusi() {
 }
 
 function begiraleenEgutegiaIkusi() {
-  const embedUrl = "https://calendar.google.com/calendar/embed?src=mutrikukoeskolakirola%40gmail.com&ctz=Europe%2FMadrid&mode=MONTH";
-
   document.getElementById("edukia").innerHTML = `
     <button class="atzera-botoia" onclick="erakutsiAtala('egutegiak')">← Egutegiak</button>
     <div class="orrialde-goiburua">
       <h2>Begiraleen egutegia</h2>
-      <p>Google Calendar · eguneratuta</p>
+      <p>Aukeratu instalazioen egutegia.</p>
     </div>
+    <section class="aukera-sarea">
+      ${aukeraBotoia("instalazioenEgutegiaIkusi('lh1246')", "LH1-LH2-LH4-LH6 Instalazioak", "egutegia")}
+      ${aukeraBotoia("instalazioenEgutegiaIkusi('lh35')", "LH3-LH5 Instalazioak", "egutegia")}
+    </section>
+  `;
+}
 
+function instalazioenEgutegiaIkusi(mota) {
+  const egutegiak = {
+    lh1246: {
+      izenburua: "LH1-LH2-LH4-LH6 Instalazioak",
+      ids: [
+        "mutrikukoeskolakirola@gmail.com",
+        "c34a07e7f122238624391124241a4808282ada68834081a193f9dc26ab7c9973@group.calendar.google.com",
+        "b28451ff946a9b6333f1cc054eb8d263feec1b96c8440ca9ce4414e669d854c2@group.calendar.google.com"
+      ]
+    },
+    lh35: {
+      izenburua: "LH3-LH5 Instalazioak",
+      ids: [
+        "mutrikukoeskolakirola@gmail.com",
+        "86688c7cba7ec1fe233aa8380423c5d6752b52bef6097c68fce0d011ae382ae8@group.calendar.google.com",
+        "e7ab91b58c9831564d3376108b910dea500445f0af259fe40dd0974fde95e421@group.calendar.google.com",
+        "a2f0cbcc2d270daf898d9e7d090ef99e537a90b9ec774a1c317860b3c48dd2c7@group.calendar.google.com"
+      ]
+    }
+  };
+
+  const aukera = egutegiak[mota];
+  if (!aukera) return begiraleenEgutegiaIkusi();
+
+  const params = new URLSearchParams();
+  aukera.ids.forEach(id => params.append("src", id));
+  params.set("ctz", "Europe/Madrid");
+  params.set("mode", "MONTH");
+  const embedUrl = `https://calendar.google.com/calendar/embed?${params.toString()}`;
+
+  document.getElementById("edukia").innerHTML = `
+    <button class="atzera-botoia" onclick="begiraleenEgutegiaIkusi()">← Begiraleen egutegia</button>
+    <div class="orrialde-goiburua">
+      <h2>${babestu(aukera.izenburua)}</h2>
+      <p>Google Calendar · ${aukera.ids.length} egutegi batera</p>
+    </div>
     <article class="txartela" style="padding:0; overflow:hidden;">
       <iframe
-        src="${embedUrl}"
-        title="Begiraleen egutegia"
+        src="${babestu(embedUrl)}"
+        title="${babestu(aukera.izenburua)}"
         style="width:100%; height:72vh; min-height:560px; border:0; display:block; background:#fff;"
-        frameborder="0"
-        scrolling="no">
+        loading="lazy"
+        frameborder="0">
       </iframe>
     </article>
-
     <p style="margin:12px 4px 0; font-size:0.9rem; opacity:.75;">
-      Egutegia hemen bertan ikusiko duzu. Google Calendar-en egiten dituzun aldaketak automatikoki agertuko dira.
+      Google Calendar-en aldaketak egutegia berriro kargatzean agertuko dira.
     </p>
   `;
 }
